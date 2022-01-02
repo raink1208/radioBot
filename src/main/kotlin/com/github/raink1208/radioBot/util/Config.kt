@@ -2,20 +2,21 @@ package com.github.raink1208.radioBot.util
 
 import org.yaml.snakeyaml.Yaml
 import java.io.File
+import java.lang.NullPointerException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
 object Config {
     private val file: File = Paths.get("./setting.yml").toAbsolutePath().normalize().toFile()
-    private val config: Map<*, *>
+    private val config: Map<String, *>
 
     init {
         if (!file.exists()) {
             generateSettingFile()
         }
 
-        config = Yaml().loadAs(file.reader(Charsets.UTF_8), Map::class.java)
+        config = Yaml().load(file.reader())
     }
 
     private fun generateSettingFile() {
@@ -36,8 +37,8 @@ object Config {
 
     fun getTwitterCookie(): String = getString("twitterCookie")
 
-    fun get(path: String): Any? {
-        return config[path]
+    fun get(path: String): Any {
+        return config[path] ?: throw NullPointerException("setting.yml:" + path + "は存在しません")
     }
 
     private fun getString(path: String): String {
