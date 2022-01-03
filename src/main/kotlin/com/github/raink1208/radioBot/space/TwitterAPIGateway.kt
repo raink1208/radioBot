@@ -1,6 +1,5 @@
 package com.github.raink1208.radioBot.space
 
-import com.github.raink1208.radioBot.commands.SpacePlayCommand
 import com.github.raink1208.radioBot.models.TwitterAudioSpace
 import com.github.raink1208.radioBot.models.TwitterSpace
 import com.github.raink1208.radioBot.models.TwitterSpaceStreamStatus
