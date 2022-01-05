@@ -44,3 +44,12 @@ jobs:
 
       # run tests!
       - run: gradle test
+
+workflows:
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
