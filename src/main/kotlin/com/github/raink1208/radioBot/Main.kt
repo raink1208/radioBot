@@ -42,7 +42,7 @@ class Main: ListenerAdapter() {
 
     private val commands = setOf(
         MusicLoopCommand, MusicNowPlayingCommand, MusicPlayCommand, MusicQueueCommand, MusicSkipCommand, RadioPlayCommand,
-        MusicSearchCommand, QueueLoopCommand, SpacePlayCommand
+        MusicSearchCommand, QueueLoopCommand, SpacePlayCommand, VCLeaveCommand
     )
 
     val playerManager = DefaultAudioPlayerManager()
