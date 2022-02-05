@@ -32,7 +32,7 @@ class AandGRadioAudioTrack: MpegTsM3uStreamAudioTrack(trackInfo) {
         return httpInterfaceManager.`interface`
     }
 
-    private fun loadRadioInfoList(): List<String> {
+    fun loadRadioInfoList(): List<String> {
         val lineText = DataFormatTools.streamToLines(httpInterface.execute(HttpGet(AandGReference.radioInfoUrl)).entity.content, StandardCharsets.UTF_8)
         val codec = URLCodec("UTF-8")
         val regex = """'(.*?)'""".toRegex()
