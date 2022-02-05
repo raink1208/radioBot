@@ -4,7 +4,6 @@ import com.github.raink1208.radioBot.audio.GuildMusicManager
 import com.github.raink1208.radioBot.command.CommandHandler
 import com.github.raink1208.radioBot.commands.*
 import com.github.raink1208.radioBot.eventListener.EventListener
-import com.github.raink1208.radioBot.eventListener.URLMessageListener
 import com.github.raink1208.radioBot.util.Config
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
@@ -62,7 +61,6 @@ class Main: ListenerAdapter() {
             jda = JDABuilder.createDefault(token)
                 .addEventListeners(this)
                 .addEventListeners(EventListener)
-                .addEventListeners(URLMessageListener)
                 .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.DEFAULT))
                 .build()
 
