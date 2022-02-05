@@ -11,5 +11,5 @@ data class TwitterAudioSpace(val data: AudioSpace) {
     data class AudioSpaceData(val metadata: MetaData)
 
     @Serializable
-    data class MetaData(val media_key: String, val title: String)
+    data class MetaData(val media_key: String)
 }

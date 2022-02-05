@@ -35,8 +35,8 @@ object SpacePlayCommand: ICommand {
 
         return SpaceAudioTrack(
             AudioTrackInfo(
-                audioSpace.data.audioSpace.metadata.title,
-                "twitter space: " + user.data.username,
+                "twitter space",
+                user.data.username,
                 Units.DURATION_MS_UNKNOWN,
                 "",
                 true,
