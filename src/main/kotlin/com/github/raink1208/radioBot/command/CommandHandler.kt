@@ -1,10 +1,11 @@
 package com.github.raink1208.radioBot.command
 
 import net.dv8tion.jda.api.entities.Message
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class CommandHandler {
-    val logger = LoggerFactory.getLogger(CommandHandler::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(CommandHandler::class.java)
     private val commandList = HashSet<ICommand>()
 
     fun registerCommands(commands: Set<ICommand>) {

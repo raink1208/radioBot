@@ -15,10 +15,9 @@ import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.internal.entities.EntityBuilder
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.security.auth.login.LoginException
-
-val logger = LoggerFactory.getLogger(Main::class.java)
 
 fun main() {
     try {
@@ -30,6 +29,7 @@ fun main() {
 }
 
 class Main: ListenerAdapter() {
+    private val logger: Logger = LoggerFactory.getLogger(Main::class.java)
     companion object {
         lateinit var instance: Main
         private set
@@ -39,6 +39,8 @@ class Main: ListenerAdapter() {
 
     lateinit var jda: JDA
 
+    private val commandHandler = CommandHandler()
+
     private val commands = setOf(
         MusicLoopCommand, MusicNowPlayingCommand, MusicPlayCommand, MusicQueueCommand, MusicSkipCommand, RadioPlayCommand,
         MusicSearchCommand, QueueLoopCommand, SpacePlayCommand, VCLeaveCommand
@@ -46,8 +48,6 @@ class Main: ListenerAdapter() {
 
     val playerManager = DefaultAudioPlayerManager()
     val musicManagers = mutableMapOf<Long, GuildMusicManager>()
-
-    val commandHandler = CommandHandler()
 
     init {
         AudioSourceManagers.registerRemoteSources(playerManager)
@@ -61,7 +61,7 @@ class Main: ListenerAdapter() {
             jda = JDABuilder.createDefault(token)
                 .addEventListeners(this)
                 .addEventListeners(EventListener)
-                .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.DEFAULT))
+                .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.CUSTOM_STATUS))
                 .build()
 
             commandHandler.registerCommands(commands)
