@@ -18,9 +18,9 @@ import net.dv8tion.jda.api.managers.AudioManager
 object MusicPlayCommand: ICommand {
     override fun execute(message: Message, args: String) {
         val channel = message.channel
-        val voice = message.member?.voiceState?.channel
+        val voiceChannel = message.member?.voiceState?.channel
 
-        if (voice == null) {
+        if (voiceChannel == null) {
             channel.sendMessage("VCに参加してから使用してください").queue()
             return
         }
@@ -28,16 +28,17 @@ object MusicPlayCommand: ICommand {
         val audioManager = message.guild.audioManager
 
         if (audioManager.isConnected) {
-            if (audioManager.connectedChannel?.id != voice.id) {
+            if (audioManager.connectedChannel?.id != voiceChannel.id) {
                 channel.sendMessage("既にほかのチャンネルで使われています").queue()
                 return
             }
         }
 
-        if (channel is TextChannel) loadAndPlay(channel, voice, args)
+        if (voiceChannel is VoiceChannel)
+        if (channel is TextChannel) loadAndPlay(channel, voiceChannel, args)
     }
 
-    private fun loadAndPlay(channel: TextChannel,voiceChannel: VoiceChannel, trackUrl: String) {
+    private fun loadAndPlay(channel: TextChannel, voiceChannel: VoiceChannel, trackUrl: String) {
         val musicManager = Main.instance.getGuildAudioPlayer(channel.guild)
         Main.instance.playerManager.loadItemOrdered(musicManager, trackUrl, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {

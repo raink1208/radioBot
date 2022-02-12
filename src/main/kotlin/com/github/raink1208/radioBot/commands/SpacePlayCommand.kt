@@ -25,6 +25,7 @@ object SpacePlayCommand: ICommand {
         val guild = message.guild
         val voiceChannel = message.member?.voiceState?.channel ?: return
 
+        if (voiceChannel is VoiceChannel)
         play(guild, voiceChannel, musicManager, audioTrack)
     }
 
