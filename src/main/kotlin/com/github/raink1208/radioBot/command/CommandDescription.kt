@@ -1,7 +1,5 @@
 package com.github.raink1208.radioBot.command
 
-import com.github.raink1208.radioBot.command.CommandAttribute
-
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
 annotation class CommandDescription(
