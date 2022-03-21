@@ -3,6 +3,7 @@ package com.github.raink1208.radioBot
 import com.github.raink1208.radioBot.audio.GuildMusicManager
 import com.github.raink1208.radioBot.command.CommandHandler
 import com.github.raink1208.radioBot.commands.*
+import com.github.raink1208.radioBot.eventListener.CommandListener
 import com.github.raink1208.radioBot.eventListener.EventListener
 import com.github.raink1208.radioBot.util.Config
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
@@ -12,7 +13,6 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.events.ReadyEvent
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.internal.entities.EntityBuilder
 import org.slf4j.Logger
@@ -59,6 +59,7 @@ class Main: ListenerAdapter() {
             jda = JDABuilder.createDefault(token)
                 .addEventListeners(this)
                 .addEventListeners(EventListener)
+                .addEventListeners(CommandListener)
                 .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.CUSTOM_STATUS))
                 .build()
 
