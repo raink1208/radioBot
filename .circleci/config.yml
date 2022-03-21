@@ -47,7 +47,7 @@ jobs:
           command: gradle build
 
       - store_artifacts:
-          path: ~/project/build/libs/radioBot.jar
+          path: ~/repo/build/libs/radioBot.jar
 
       # run tests!
       - run: gradle test
