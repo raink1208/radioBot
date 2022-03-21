@@ -33,8 +33,6 @@ class Main: ListenerAdapter() {
     companion object {
         lateinit var instance: Main
         private set
-
-        const val COMMAND_PREFIX = "r!"
     }
 
     lateinit var jda: JDA
