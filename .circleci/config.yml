@@ -42,7 +42,9 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle.kts" }}
 
-      - run: ./gradlew build
+      - run:
+          name: ビルド
+          command: gradle build
 
       - store_artifacts:
           path: ~/project/build/libs/radioBot.jar
