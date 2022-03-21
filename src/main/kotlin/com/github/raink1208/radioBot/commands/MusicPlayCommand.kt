@@ -2,30 +2,38 @@ package com.github.raink1208.radioBot.commands
 
 import com.github.raink1208.radioBot.Main
 import com.github.raink1208.radioBot.audio.GuildMusicManager
-import com.github.raink1208.radioBot.command.CommandDescription
-import com.github.raink1208.radioBot.command.ICommand
+import com.github.raink1208.radioBot.command.CommandBase
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import net.dv8tion.jda.api.entities.AudioChannel
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.TextChannel
-import net.dv8tion.jda.api.entities.VoiceChannel
+import net.dv8tion.jda.api.entities.MessageChannel
+import net.dv8tion.jda.api.interactions.commands.OptionType
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
+import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.managers.AudioManager
 
-@CommandDescription("play", "音楽を再生する", ["p", "pl"], 1)
-object MusicPlayCommand: ICommand {
-    override fun execute(message: Message, args: String) {
-        val channel = message.channel
-        val voiceChannel = message.member?.voiceState?.channel
+object MusicPlayCommand: CommandBase {
+    override val commandData = Commands.slash("play", "音楽を再生する")
+        .addOption(OptionType.STRING, "url", "再生する音楽のURL", true)
 
-        if (voiceChannel == null) {
-            channel.sendMessage("VCに参加してから使用してください").queue()
+    override fun execute(command: SlashCommandInteraction) {
+        val channel = command.channel
+        val guild = command.guild
+        val voiceChannel = command.member?.voiceState?.channel
+
+        if (guild == null) {
+            command.reply("Guild外では使用できません").queue()
             return
         }
 
-        val audioManager = message.guild.audioManager
+        if (voiceChannel == null) {
+            command.reply("VC参加してから使用してください").queue()
+            return
+        }
+        val audioManager = guild.audioManager
 
         if (audioManager.isConnected) {
             if (audioManager.connectedChannel?.id != voiceChannel.id) {
@@ -34,16 +42,21 @@ object MusicPlayCommand: ICommand {
             }
         }
 
-        if (voiceChannel is VoiceChannel)
-        if (channel is TextChannel) loadAndPlay(channel, voiceChannel, args)
+        val url = command.getOption("url")?.asString
+        if (url == null) {
+            command.reply("urlが入力されていません").queue()
+            return
+        }
+        command.reply("再生の準備をしています").queue()
+        loadAndPlay(channel, guild, voiceChannel, url)
     }
 
-    private fun loadAndPlay(channel: TextChannel, voiceChannel: VoiceChannel, trackUrl: String) {
-        val musicManager = Main.instance.getGuildAudioPlayer(channel.guild)
-        Main.instance.playerManager.loadItemOrdered(musicManager, trackUrl, object : AudioLoadResultHandler {
+    private fun loadAndPlay(channel: MessageChannel, guild: Guild, audioChannel: AudioChannel, trackUrl: String) {
+        val musicManager = Main.instance.getGuildAudioPlayer(guild)
+        Main.instance.playerManager.loadItemOrdered(musicManager, trackUrl, object :AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 channel.sendMessage("キューに曲を追加したよ: " + track.info.title).queue()
-                play(channel.guild, voiceChannel, musicManager, track)
+                play(guild, audioChannel, musicManager, track)
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
@@ -51,8 +64,8 @@ object MusicPlayCommand: ICommand {
                 if (firstTrack == null) {
                     firstTrack = playlist.tracks[0]
                 }
-                channel.sendMessage("キューに曲を追加したよ: " + firstTrack!!.info.title + " (最初の曲: " + playlist.name + ")").queue()
-                play(channel.guild, voiceChannel, musicManager, firstTrack)
+                channel.sendMessage("キューに曲を追加したよ: " + firstTrack.info.title + " (最初の曲: " + playlist.name + ")").queue()
+                play(guild, audioChannel, musicManager, firstTrack)
             }
 
             override fun noMatches() {
@@ -65,14 +78,14 @@ object MusicPlayCommand: ICommand {
         })
     }
 
-    private fun play(guild: Guild, voiceChannel: VoiceChannel, musicManager: GuildMusicManager, track: AudioTrack) {
-        connectVoiceChannel(guild.audioManager, voiceChannel)
+    private fun play(guild: Guild, audioChannel: AudioChannel, musicManager: GuildMusicManager, track: AudioTrack) {
+        connectVoiceChannel(guild.audioManager, audioChannel)
         musicManager.scheduler.queue(track)
     }
 
-    private fun connectVoiceChannel(audioManager: AudioManager, voiceChannel: VoiceChannel) {
+    private fun connectVoiceChannel(audioManager: AudioManager, audioChannel: AudioChannel) {
         if (!audioManager.isConnected) {
-            audioManager.openAudioConnection(voiceChannel)
+            audioManager.openAudioConnection(audioChannel)
         }
     }
 }

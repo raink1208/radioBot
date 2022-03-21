@@ -37,11 +37,8 @@ class Main: ListenerAdapter() {
 
     lateinit var jda: JDA
 
-    private val commandHandler = CommandHandler()
-
     private val commands = setOf(
-        MusicLoopCommand, MusicNowPlayingCommand, MusicPlayCommand, MusicQueueCommand, MusicSkipCommand, RadioPlayCommand,
-        MusicSearchCommand, QueueLoopCommand, SpacePlayCommand, VCLeaveCommand
+        MusicPlayCommand, VCLeaveCommand
     )
 
     val playerManager = DefaultAudioPlayerManager()
@@ -63,23 +60,17 @@ class Main: ListenerAdapter() {
                 .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.CUSTOM_STATUS))
                 .build()
 
-            commandHandler.registerCommands(commands)
         } catch (e: LoginException) {
             e.printStackTrace()
         }
+        registerCommands()
     }
 
-    override fun onMessageReceived(event: MessageReceivedEvent) {
-        if (event.author.isBot) return
-        val command = event.message.contentRaw.split(" ")
-
-        if (command[0].isEmpty()) return
-        if (!command[0].startsWith(COMMAND_PREFIX)) return
-
-        val cmd = command[0].drop(COMMAND_PREFIX.length)
-        val args = command.drop(1).joinToString(" ")
-
-        commandHandler.findAndExecute(cmd, event.message, args)
+    private fun registerCommands() {
+        for (command in commands) {
+            jda.updateCommands().addCommands(MusicPlayCommand.commandData).queue()
+            CommandHandler.registerCommand(command)
+        }
     }
 
     fun existsGuildAudioPlayer(guild: Guild): Boolean {
