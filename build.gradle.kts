@@ -18,10 +18,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
-    implementation("net.dv8tion:JDA:4.4.0_350")
+    implementation("net.dv8tion:JDA:5.0.0-alpha.5")
     implementation("com.sedmelluq:lavaplayer:1.3.75")
-    implementation("ch.qos.logback:logback-classic:1.2.10")
-    implementation("org.yaml:snakeyaml:1.29")
+    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("org.yaml:snakeyaml:1.30")
     implementation("com.google.api-client:google-api-client:1.32.2")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.32.1")
     implementation("com.google.apis:google-api-services-youtube:v3-rev20210915-1.32.1")

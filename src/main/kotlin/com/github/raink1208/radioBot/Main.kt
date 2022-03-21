@@ -3,6 +3,7 @@ package com.github.raink1208.radioBot
 import com.github.raink1208.radioBot.audio.GuildMusicManager
 import com.github.raink1208.radioBot.command.CommandHandler
 import com.github.raink1208.radioBot.commands.*
+import com.github.raink1208.radioBot.eventListener.CommandListener
 import com.github.raink1208.radioBot.eventListener.EventListener
 import com.github.raink1208.radioBot.util.Config
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
@@ -12,13 +13,11 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.events.ReadyEvent
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.internal.entities.EntityBuilder
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.security.auth.login.LoginException
-
-val logger = LoggerFactory.getLogger(Main::class.java)
 
 fun main() {
     try {
@@ -30,24 +29,21 @@ fun main() {
 }
 
 class Main: ListenerAdapter() {
+    private val logger: Logger = LoggerFactory.getLogger(Main::class.java)
     companion object {
         lateinit var instance: Main
         private set
-
-        const val COMMAND_PREFIX = "r!"
     }
 
     lateinit var jda: JDA
 
     private val commands = setOf(
-        MusicLoopCommand, MusicNowPlayingCommand, MusicPlayCommand, MusicQueueCommand, MusicSkipCommand, RadioPlayCommand,
-        MusicSearchCommand, QueueLoopCommand, SpacePlayCommand, VCLeaveCommand
+        MusicPlayCommand, VCLeaveCommand, MusicLoopCommand, MusicNowPlayingCommand, MusicQueueCommand,
+        MusicSkipCommand, RadioPlayCommand, QueueLoopCommand, SpacePlayCommand, MusicSearchCommand
     )
 
     val playerManager = DefaultAudioPlayerManager()
     val musicManagers = mutableMapOf<Long, GuildMusicManager>()
-
-    val commandHandler = CommandHandler()
 
     init {
         AudioSourceManagers.registerRemoteSources(playerManager)
@@ -61,26 +57,23 @@ class Main: ListenerAdapter() {
             jda = JDABuilder.createDefault(token)
                 .addEventListeners(this)
                 .addEventListeners(EventListener)
-                .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.DEFAULT))
+                .addEventListeners(CommandListener)
+                .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.CUSTOM_STATUS))
                 .build()
 
-            commandHandler.registerCommands(commands)
         } catch (e: LoginException) {
             e.printStackTrace()
         }
+        registerCommands()
     }
 
-    override fun onMessageReceived(event: MessageReceivedEvent) {
-        if (event.author.isBot) return
-        val command = event.message.contentRaw.split(" ")
-
-        if (command[0].isEmpty()) return
-        if (!command[0].startsWith(COMMAND_PREFIX)) return
-
-        val cmd = command[0].drop(COMMAND_PREFIX.length)
-        val args = command.drop(1).joinToString(" ")
-
-        commandHandler.findAndExecute(cmd, event.message, args)
+    private fun registerCommands() {
+        val commandsUpdate = jda.updateCommands()
+        for (command in commands) {
+            commandsUpdate.addCommands(command.commandData)
+            CommandHandler.registerCommand(command)
+        }
+        commandsUpdate.queue()
     }
 
     fun existsGuildAudioPlayer(guild: Guild): Boolean {

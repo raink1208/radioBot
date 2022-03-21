@@ -1,69 +1,43 @@
 package com.github.raink1208.radioBot.command
 
-import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class CommandHandler {
-    val logger = LoggerFactory.getLogger(CommandHandler::class.java)
-    private val commandList = HashSet<ICommand>()
+object CommandHandler {
+    private val logger: Logger = LoggerFactory.getLogger(CommandHandler::class.java)
+    private val commandList = HashSet<CommandBase>()
 
-    fun registerCommands(commands: Set<ICommand>) {
-        commandList.addAll(commands)
-    }
-
-    fun registerCommands(vararg commands: ICommand) {
-        commandList.addAll(commands)
-    }
-
-    fun registerCommand(command: ICommand) {
+    fun registerCommand(command: CommandBase) {
         commandList.add(command)
     }
 
-    fun unregisterCommands(commands: Set<ICommand>) {
-        commandList.removeAll(commands)
-    }
-
-    fun unregisterCommands(vararg commands: ICommand) {
-        commandList.removeAll(commands)
-    }
-
-    fun unregisterCommand(command: ICommand) {
+    fun unregisterCommand(command: CommandBase) {
         commandList.remove(command)
     }
 
-    fun findCommand(command: String): ICommand? {
+    fun findCommand(commandName: String): CommandBase? {
         return commandList.find {
-            it.description?.aliases?.contains(command) ?: false || it.description?.name == command
+            it.commandData.name == commandName
         }
     }
 
-    fun findAndExecute(command: String, message: Message, args: String) {
-        val cmd = findCommand(command)
-        if (cmd?.description == null) return
-        execute(cmd, message, args)
-    }
-
-    fun execute(command: ICommand, message: Message, args: String) {
-        val description = command.description
-
-        if (description == null) {
-            logger.error(command.javaClass.name + "クラスにDescriptionが存在しません")
+    fun execute(commandInteraction: SlashCommandInteraction) {
+        val command = findCommand(commandInteraction.name)
+        if (command == null) {
+            commandInteraction.reply("コマンドが見つかりませんでした").queue()
             return
         }
-
-        if (description.args > args.split(" ").size) return
-        if (description.args == 1 && args == "") return
-        args.trim()
         try {
-            command.execute(message, args)
-            logger.info("コマンドを実行しました: " + description.name)
+            command.execute(commandInteraction)
+            logger.info("コマンドを実行しました: " + command.commandData.name)
         } catch (e: Exception) {
-            logger.error("実行時にエラーが起きました: " + description.name)
+            logger.error("実行時にエラーが起きました: " + command.commandData.name)
             e.printStackTrace()
         }
     }
 
-    fun getEntireCommands(): Set<ICommand> {
+    fun getEntireCommandList(): Set<CommandBase> {
         return commandList
     }
 }
