@@ -67,10 +67,12 @@ class Main: ListenerAdapter() {
     }
 
     private fun registerCommands() {
+        val commandsUpdate = jda.updateCommands()
         for (command in commands) {
-            jda.updateCommands().addCommands(MusicPlayCommand.commandData).queue()
+            commandsUpdate.addCommands(command.commandData)
             CommandHandler.registerCommand(command)
         }
+        commandsUpdate.queue()
     }
 
     fun existsGuildAudioPlayer(guild: Guild): Boolean {
