@@ -9,6 +9,7 @@ object CommandHandler {
     private val commandList = HashSet<CommandBase>()
 
     fun registerCommand(command: CommandBase) {
+        logger.info("Loaded "+command.commandData.name + "Command")
         commandList.add(command)
     }
 
