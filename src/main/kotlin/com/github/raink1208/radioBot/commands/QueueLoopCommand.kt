@@ -1,33 +1,31 @@
 package com.github.raink1208.radioBot.commands
 
 import com.github.raink1208.radioBot.Main
-import com.github.raink1208.radioBot.command.CommandDescription
-import com.github.raink1208.radioBot.command.ICommand
-import net.dv8tion.jda.api.entities.Message
+import com.github.raink1208.radioBot.command.CommandBase
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
+import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-@CommandDescription("queueloop", "再生キューに入ってる曲をループ", ["ql"])
-object QueueLoopCommand: ICommand {
-    override fun execute(message: Message, args: String) {
-        val channel = message.channel
-        if (!Main.instance.existsGuildAudioPlayer(message.guild)) {
-            channel.sendMessage("musicManagerが見つかりませんでした").queue()
+object QueueLoopCommand: CommandBase {
+    override val commandData = Commands.slash("queueloop", "再生キューに入ってる音楽をループ")
+
+    override fun execute(command: SlashCommandInteraction) {
+        val guild = command.guild
+        if (guild == null) {
+            command.reply("Guild外では使えません").queue()
             return
         }
-
-        val voice = message.member?.voiceState?.channel
-        if (voice == null) {
-            channel.sendMessage("VCに参加してから使用してください").queue()
+        val audioChannel = command.member?.voiceState?.channel
+        if (audioChannel == null) {
+            command.reply("VCに参加してから使用してください").queue()
             return
         }
-        val audioManager = message.guild.audioManager
+        val audioManager = guild.audioManager
 
-        if (audioManager.connectedChannel?.id != voice.id) {
-            channel.sendMessage("ほかのチャンネルで使われています").queue()
-            return
+        if (audioManager.connectedChannel?.id == audioChannel.id) {
+            command.reply("他のチャンネルで使われています").queue()
         }
-
-        val manager = Main.instance.getGuildAudioPlayer(message.guild)
-        manager.toggleQueueLoop()
-        channel.sendMessage("キューループ: " + if (manager.queueLoop) "有効" else "無効" + "に切り替えました").queue()
+        val manager = Main.instance.getGuildAudioPlayer(guild)
+        manager.queueLoop
+        command.reply("キューループ: " + if (manager.queueLoop) "有効" else "無効" + "に切り替えました").queue()
     }
 }

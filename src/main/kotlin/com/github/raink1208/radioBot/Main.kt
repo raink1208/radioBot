@@ -38,7 +38,8 @@ class Main: ListenerAdapter() {
     lateinit var jda: JDA
 
     private val commands = setOf(
-        MusicPlayCommand, VCLeaveCommand
+        MusicPlayCommand, VCLeaveCommand, MusicLoopCommand, MusicNowPlayingCommand, MusicQueueCommand,
+        MusicSkipCommand, RadioPlayCommand, QueueLoopCommand, SpacePlayCommand, MusicSearchCommand
     )
 
     val playerManager = DefaultAudioPlayerManager()

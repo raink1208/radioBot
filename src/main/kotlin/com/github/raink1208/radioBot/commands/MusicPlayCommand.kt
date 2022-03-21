@@ -22,21 +22,21 @@ object MusicPlayCommand: CommandBase {
     override fun execute(command: SlashCommandInteraction) {
         val channel = command.channel
         val guild = command.guild
-        val voiceChannel = command.member?.voiceState?.channel
+        val audioChannel = command.member?.voiceState?.channel
 
         if (guild == null) {
             command.reply("Guild外では使用できません").queue()
             return
         }
 
-        if (voiceChannel == null) {
+        if (audioChannel == null) {
             command.reply("VC参加してから使用してください").queue()
             return
         }
         val audioManager = guild.audioManager
 
         if (audioManager.isConnected) {
-            if (audioManager.connectedChannel?.id != voiceChannel.id) {
+            if (audioManager.connectedChannel?.id != audioChannel.id) {
                 channel.sendMessage("既にほかのチャンネルで使われています").queue()
                 return
             }
@@ -48,7 +48,7 @@ object MusicPlayCommand: CommandBase {
             return
         }
         command.reply("再生の準備をしています").queue()
-        loadAndPlay(channel, guild, voiceChannel, url)
+        loadAndPlay(channel, guild, audioChannel, url)
     }
 
     private fun loadAndPlay(channel: MessageChannel, guild: Guild, audioChannel: AudioChannel, trackUrl: String) {
