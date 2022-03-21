@@ -40,6 +40,7 @@ object SpacePlayCommand: CommandBase {
             command.reply("VCに参加してから使用してください").queue()
             return
         }
+        command.reply("再生の準備をしています")
         play(guild, audioChannel, musicManager, audioTrack)
     }
 
