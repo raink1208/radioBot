@@ -20,16 +20,3 @@ object MusicSkipCommand: CommandBase {
         command.channel.sendMessage("音楽をスキップします").queue()
     }
 }
-
-/*object MusicSkipCommand: ICommand {
-    override fun execute(message: Message, args: String) {
-        val channel = message.channel
-        if (channel is TextChannel) skipTrack(channel)
-    }
-
-    private fun skipTrack(channel: TextChannel) {
-        val musicManager = Main.instance.getGuildAudioPlayer(channel.guild)
-        musicManager.skipTrack()
-        channel.sendMessage("曲をスキップします").queue()
-    }
-}*/
