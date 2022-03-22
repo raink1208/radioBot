@@ -14,8 +14,12 @@ object MusicNowPlayingCommand: CommandBase {
             command.reply("Guild外では使用できません").queue()
             return
         }
+        val musicManager = Main.instance.musicManagers[guild.idLong]
+        if (musicManager == null) {
+            command.reply("Botは使われていません").queue()
+            return
+        }
         if (Main.instance.existsGuildAudioPlayer(guild)) {
-            val musicManager = Main.instance.getGuildAudioPlayer(guild)
             val now = musicManager.player.playingTrack
             command.replyEmbeds(now.infoEmbed()).queue()
         }
