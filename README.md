@@ -1,0 +1,2 @@
+# radioBot
+radioBotはDiscordのVCで音楽やネットラジオを再生するDiscord Botです
