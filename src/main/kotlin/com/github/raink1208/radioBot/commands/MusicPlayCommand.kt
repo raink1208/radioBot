@@ -55,17 +55,15 @@ object MusicPlayCommand: CommandBase {
         val musicManager = Main.instance.getGuildAudioPlayer(guild)
         Main.instance.playerManager.loadItemOrdered(musicManager, trackUrl, object :AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
-                channel.sendMessage("キューに曲を追加したよ: " + track.info.title).queue()
+                channel.sendMessage("キューに曲を追加しました: " + track.info.title).queue()
                 play(guild, audioChannel, musicManager, track)
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
-                var firstTrack = playlist.selectedTrack
-                if (firstTrack == null) {
-                    firstTrack = playlist.tracks[0]
+                for (audioTrack in playlist.tracks) {
+                    play(guild, audioChannel, musicManager, audioTrack)
                 }
-                channel.sendMessage("キューに曲を追加したよ: " + firstTrack.info.title + " (最初の曲: " + playlist.name + ")").queue()
-                play(guild, audioChannel, musicManager, firstTrack)
+                channel.sendMessage("キューにプレイリストを追加しました:" + playlist.name)
             }
 
             override fun noMatches() {

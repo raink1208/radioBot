@@ -78,12 +78,6 @@ object MusicSearchCommand: CommandBase {
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
-                var firstTrack = playlist.selectedTrack
-                if (firstTrack == null) {
-                    firstTrack = playlist.tracks[0]
-                }
-                channel.sendMessage("キューに曲を追加したよ: " + firstTrack.info.title + " (最初の曲: " + playlist.name + ")").queue()
-                play(guild, audioChannel, musicManager, firstTrack)
             }
 
             override fun noMatches() {
