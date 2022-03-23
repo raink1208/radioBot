@@ -63,7 +63,7 @@ object MusicPlayCommand: CommandBase {
                 for (audioTrack in playlist.tracks) {
                     play(guild, audioChannel, musicManager, audioTrack)
                 }
-                channel.sendMessage("キューにプレイリストを追加しました:" + playlist.name)
+                channel.sendMessage("キューにプレイリストを追加しました:" + playlist.name).queue()
             }
 
             override fun noMatches() {
