@@ -10,7 +10,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioReference
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo
 import org.apache.commons.codec.net.URLCodec
 import org.apache.http.client.methods.HttpGet
-import org.slf4j.LoggerFactory
 import java.nio.charset.StandardCharsets
 
 class AandGRadioAudioTrack: MpegTsM3uStreamAudioTrack(trackInfo) {
@@ -19,7 +18,6 @@ class AandGRadioAudioTrack: MpegTsM3uStreamAudioTrack(trackInfo) {
             AandGReference.playlistUrl
         )
     }
-    private val Logger = LoggerFactory.getLogger(AandGRadioAudioTrack::class.java)
 
     private val segmentUrlProvider = AandGRadioSegmentUrlProvider()
     private val httpInterfaceManager = HttpClientTools.createDefaultThreadLocalManager()
