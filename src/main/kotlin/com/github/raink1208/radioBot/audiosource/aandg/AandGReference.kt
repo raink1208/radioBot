@@ -1,4 +1,4 @@
-package com.github.raink1208.radioBot.aandg
+package com.github.raink1208.radioBot.audiosource.aandg
 
 object AandGReference {
     const val playerUrl = "https://www.uniqueradio.jp/agplayer5/player.php"

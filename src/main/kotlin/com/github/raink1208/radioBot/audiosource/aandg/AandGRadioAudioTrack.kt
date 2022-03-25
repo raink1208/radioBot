@@ -1,4 +1,4 @@
-package com.github.raink1208.radioBot.aandg
+package com.github.raink1208.radioBot.audiosource.aandg
 
 import com.sedmelluq.discord.lavaplayer.source.stream.M3uStreamSegmentUrlProvider
 import com.sedmelluq.discord.lavaplayer.source.stream.MpegTsM3uStreamAudioTrack

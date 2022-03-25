@@ -1,4 +1,4 @@
-package com.github.raink1208.radioBot.models
+package com.github.raink1208.radioBot.model
 
 import kotlinx.serialization.Serializable
 

@@ -3,9 +3,9 @@ package com.github.raink1208.radioBot.commands
 import com.github.raink1208.radioBot.Main
 import com.github.raink1208.radioBot.audio.GuildMusicManager
 import com.github.raink1208.radioBot.command.CommandBase
-import com.github.raink1208.radioBot.models.TwitterUser
-import com.github.raink1208.radioBot.space.SpaceAudioTrack
-import com.github.raink1208.radioBot.space.TwitterAPIGateway
+import com.github.raink1208.radioBot.model.TwitterUser
+import com.github.raink1208.radioBot.audiosource.space.SpaceAudioTrack
+import com.github.raink1208.radioBot.audiosource.space.TwitterAPIGateway
 import com.sedmelluq.discord.lavaplayer.tools.Units
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo

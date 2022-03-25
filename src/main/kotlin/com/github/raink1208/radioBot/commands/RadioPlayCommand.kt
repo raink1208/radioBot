@@ -1,7 +1,7 @@
 package com.github.raink1208.radioBot.commands
 
 import com.github.raink1208.radioBot.Main
-import com.github.raink1208.radioBot.aandg.AandGRadioAudioTrack
+import com.github.raink1208.radioBot.audiosource.aandg.AandGRadioAudioTrack
 import com.github.raink1208.radioBot.audio.GuildMusicManager
 import com.github.raink1208.radioBot.command.CommandBase
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack

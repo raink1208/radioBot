@@ -1,4 +1,4 @@
-package com.github.raink1208.radioBot.space
+package com.github.raink1208.radioBot.audiosource.space
 
 import com.sedmelluq.discord.lavaplayer.container.adts.AdtsAudioTrack
 import com.sedmelluq.discord.lavaplayer.source.stream.M3uStreamAudioTrack

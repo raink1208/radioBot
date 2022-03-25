@@ -1,9 +1,9 @@
-package com.github.raink1208.radioBot.space
+package com.github.raink1208.radioBot.audiosource.space
 
-import com.github.raink1208.radioBot.models.TwitterAudioSpace
-import com.github.raink1208.radioBot.models.TwitterSpace
-import com.github.raink1208.radioBot.models.TwitterSpaceStreamStatus
-import com.github.raink1208.radioBot.models.TwitterUser
+import com.github.raink1208.radioBot.model.TwitterAudioSpace
+import com.github.raink1208.radioBot.model.TwitterSpace
+import com.github.raink1208.radioBot.model.TwitterSpaceStreamStatus
+import com.github.raink1208.radioBot.model.TwitterUser
 import com.github.raink1208.radioBot.util.Config
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json

@@ -3,8 +3,8 @@ package com.github.raink1208.radioBot
 import com.github.raink1208.radioBot.audio.GuildMusicManager
 import com.github.raink1208.radioBot.command.CommandHandler
 import com.github.raink1208.radioBot.commands.*
-import com.github.raink1208.radioBot.eventListener.CommandListener
-import com.github.raink1208.radioBot.eventListener.EventListener
+import com.github.raink1208.radioBot.listener.CommandListener
+import com.github.raink1208.radioBot.listener.EventListener
 import com.github.raink1208.radioBot.util.Config
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
