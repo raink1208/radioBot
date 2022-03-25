@@ -7,7 +7,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object EventListener: ListenerAdapter() {
-    val logger: Logger = LoggerFactory.getLogger(EventListener::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(EventListener::class.java)
     override fun onGuildVoiceLeave(event: GuildVoiceLeaveEvent) {
         if (event.entity.user.idLong == Main.instance.jda.selfUser.idLong) {
             Main.instance.removeGuildAudioPlayer(event.guild)
