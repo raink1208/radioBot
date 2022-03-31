@@ -36,7 +36,7 @@ object AudioPlayer {
         })
     }
 
-    private fun play(guild: Guild, audioChannel: AudioChannel, musicManager: GuildMusicManager, track: AudioTrack) {
+    fun play(guild: Guild, audioChannel: AudioChannel, musicManager: GuildMusicManager, track: AudioTrack) {
         connectVoiceChannel(guild.audioManager, audioChannel)
         musicManager.scheduler.queue(track)
     }

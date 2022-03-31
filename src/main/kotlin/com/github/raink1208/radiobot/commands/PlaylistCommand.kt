@@ -1,7 +1,13 @@
 package com.github.raink1208.radiobot.commands
 
+import com.github.raink1208.radiobot.Main
+import com.github.raink1208.radiobot.audio.AudioPlayer
 import com.github.raink1208.radiobot.command.CommandBase
 import com.github.raink1208.radiobot.service.PlaylistService
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
@@ -30,6 +36,8 @@ object PlaylistCommand: CommandBase {
             "delete" -> delete(command)
             "edit" -> edit(command)
             "list" -> list(command)
+            "load" -> load(command)
+            "play" -> play(command)
         }
     }
 
@@ -59,6 +67,64 @@ object PlaylistCommand: CommandBase {
         }
     }
 
+    private fun play(command: SlashCommandInteraction) {
+        val name = command.getOption("name")?.asString
+        if (name == null) {
+            command.reply("nameが入力されていません").queue()
+            return
+        }
+
+        val guild = command.guild
+        val audioChannel = command.member?.voiceState?.channel
+
+        if (guild == null) {
+            command.reply("Guild外では使用できません").queue()
+            return
+        }
+
+        if (audioChannel == null) {
+            command.reply("VC参加してから使用してください").queue()
+            return
+        }
+        val audioManager = guild.audioManager
+
+        if (audioManager.isConnected) {
+            if (audioManager.connectedChannel?.id != audioChannel.id) {
+                command.reply("既にほかのチャンネルで使われています").queue()
+                return
+            }
+        }
+        val playlist = PlaylistService.getPlaylist(name)
+        if (playlist == null) {
+            command.reply("playlist: $name が見つかりませんでした").queue()
+            return
+        }
+
+        command.reply("プレイリストの読み込みを開始します").queue()
+        val musicManager = Main.instance.getGuildAudioPlayer(guild)
+        for (track in playlist.contents) {
+            Main.instance.playerManager.loadItem(track.url, object : AudioLoadResultHandler {
+                override fun trackLoaded(track: AudioTrack) {
+                    AudioPlayer.play(guild, audioChannel, musicManager, track)
+                }
+
+                override fun playlistLoaded(playlist: AudioPlaylist) {
+                    for (audioTrack in playlist.tracks) {
+                        AudioPlayer.play(guild, audioChannel, musicManager, audioTrack)
+                    }
+                }
+
+                override fun noMatches() {
+                    command.channel.sendMessage("動画が見つかりませんでした: ${track.title}").queue()
+                }
+
+                override fun loadFailed(exception: FriendlyException) {
+                    command.channel.sendMessage("読み込みできませんでした").queue()
+                }
+            })
+        }
+    }
+
     private fun edit(command: SlashCommandInteraction) {
         command.reply("この機能は準備中です").queue()
         //https://github.com/DV8FromTheWorld/JDA/pull/2024 TextInputの実装待ち
@@ -71,5 +137,20 @@ object PlaylistCommand: CommandBase {
             embed.addField(playlist.name, "author: <@" + playlist.author + ">", false)
         }
         command.replyEmbeds(embed.build()).queue()
+    }
+
+    private fun load(command: SlashCommandInteraction) {
+        val name = command.getOption("name")?.asString
+        if (name == null) {
+            command.reply("nameが入力されていません").queue()
+            return
+        }
+        val url = command.getOption("url")?.asString
+        if (url == null) {
+            command.reply("urlが入力されていません").queue()
+            return
+        }
+        command.reply("プレイリストの読み込みを開始します").queue()
+        PlaylistService.loadPlaylist(name, command.user, url)
     }
 }
