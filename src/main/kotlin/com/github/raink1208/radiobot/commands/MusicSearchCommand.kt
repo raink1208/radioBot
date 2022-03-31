@@ -1,23 +1,15 @@
 package com.github.raink1208.radiobot.commands
 
 import com.github.raink1208.radiobot.Main
-import com.github.raink1208.radiobot.audio.GuildMusicManager
+import com.github.raink1208.radiobot.audio.AudioPlayer
 import com.github.raink1208.radiobot.command.CommandBase
 import com.github.raink1208.radiobot.youtube.YoutubeAPIHandler
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.AudioChannel
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
-import net.dv8tion.jda.api.managers.AudioManager
 
 object MusicSearchCommand: CommandBase {
     override val commandData = Commands.slash("search", "youtubeから動画を検索")
@@ -61,43 +53,11 @@ object MusicSearchCommand: CommandBase {
                 if (event.message.author.idLong == authorId && event.channel.idLong == channelId) {
                     val select = event.message.contentRaw.toIntOrNull() ?: -1
                     if (0 < select && select <= result.size) {
-                        loadAndPlay(command.channel, guild, audioChannel, "https://www.youtube.com/watch?v="+result[select-1].videoId)
+                        AudioPlayer.loadAndPlay(command.channel, guild, audioChannel, "https://www.youtube.com/watch?v="+result[select-1].videoId)
                     }
                     event.jda.eventManager.unregister(this)
                 }
             }
         })
-    }
-
-    private fun loadAndPlay(channel: MessageChannel, guild: Guild, audioChannel: AudioChannel, trackUrl: String) {
-        val musicManager = Main.instance.getGuildAudioPlayer(guild)
-        Main.instance.playerManager.loadItemOrdered(musicManager, trackUrl, object : AudioLoadResultHandler {
-            override fun trackLoaded(track: AudioTrack) {
-                channel.sendMessage("キューに曲を追加したよ: " + track.info.title).queue()
-                play(guild, audioChannel, musicManager, track)
-            }
-
-            override fun playlistLoaded(playlist: AudioPlaylist) {
-            }
-
-            override fun noMatches() {
-                channel.sendMessage("動画が見つかりませんでした: $trackUrl").queue()
-            }
-
-            override fun loadFailed(exception: FriendlyException) {
-                channel.sendMessage("読み込みできませんでした").queue()
-            }
-        })
-    }
-
-    private fun play(guild: Guild, audioChannel: AudioChannel, musicManager: GuildMusicManager, track: AudioTrack) {
-        connectVoiceChannel(guild.audioManager, audioChannel)
-        musicManager.scheduler.queue(track)
-    }
-
-    private fun connectVoiceChannel(audioManager: AudioManager, audioChannel: AudioChannel) {
-        if (!audioManager.isConnected) {
-            audioManager.openAudioConnection(audioChannel)
-        }
     }
 }
