@@ -19,7 +19,8 @@ object PlaylistCommand: CommandBase {
     private val editSubCommand = SubcommandData("edit", "プレイリストの編集")
         .addOption(OptionType.STRING,"name", "プレイリスト名", true)
     private val loadSubCommand = SubcommandData("load", "外部プレイリストの読み込み")
-        .addOption(OptionType.STRING,"url", "プレイリストのURL", true)
+        .addOption(OptionType.STRING, "name", "プレイリスト名", true)
+        .addOption(OptionType.STRING, "url", "プレイリストのURL", true)
     override val commandData = Commands.slash("playlist", "プレイリスト機能")
         .addSubcommands(createSubCommand, deleteSubCommand, playSubcommand, listSubCommand, editSubCommand, loadSubCommand)
 
