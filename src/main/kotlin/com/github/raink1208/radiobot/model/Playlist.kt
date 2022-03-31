@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Playlist(
     val name: String,
     val author: Long,
-    val contents: List<PlaylistItem>
+    val contents: MutableList<PlaylistItem>
 )
