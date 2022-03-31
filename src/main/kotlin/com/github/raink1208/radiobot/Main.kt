@@ -5,6 +5,7 @@ import com.github.raink1208.radiobot.command.CommandHandler
 import com.github.raink1208.radiobot.commands.*
 import com.github.raink1208.radiobot.listener.CommandListener
 import com.github.raink1208.radiobot.listener.EventListener
+import com.github.raink1208.radiobot.listener.InteractionListener
 import com.github.raink1208.radiobot.util.Config
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
@@ -59,6 +60,7 @@ class Main: ListenerAdapter() {
                 .addEventListeners(this)
                 .addEventListeners(EventListener)
                 .addEventListeners(CommandListener)
+                .addEventListeners(InteractionListener)
                 .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.CUSTOM_STATUS))
                 .build()
 
