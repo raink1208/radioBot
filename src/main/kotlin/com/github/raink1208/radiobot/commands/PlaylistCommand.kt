@@ -9,10 +9,13 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu
 
 object PlaylistCommand: CommandBase {
     private val createSubCommand = SubcommandData("create", "プレイリストの作成")
@@ -20,7 +23,6 @@ object PlaylistCommand: CommandBase {
     private val deleteSubCommand = SubcommandData("delete", "プレイリストの削除")
         .addOption(OptionType.STRING, "name", "プレイリスト名", true)
     private val playSubcommand = SubcommandData("play", "プレイリストの再生")
-        .addOption(OptionType.STRING,"name", "プレイリスト名", true)
     private val listSubCommand = SubcommandData("list", "登録されているプレイリスト一覧")
     private val editSubCommand = SubcommandData("edit", "プレイリストの編集")
         .addOption(OptionType.STRING,"name", "プレイリスト名", true)
@@ -68,12 +70,6 @@ object PlaylistCommand: CommandBase {
     }
 
     private fun play(command: SlashCommandInteraction) {
-        val name = command.getOption("name")?.asString
-        if (name == null) {
-            command.reply("nameが入力されていません").queue()
-            return
-        }
-
         val guild = command.guild
         val audioChannel = command.member?.voiceState?.channel
 
@@ -94,35 +90,48 @@ object PlaylistCommand: CommandBase {
                 return
             }
         }
-        val playlist = PlaylistService.getPlaylist(name)
-        if (playlist == null) {
-            command.reply("playlist: $name が見つかりませんでした").queue()
-            return
+
+        val selectMenu = SelectMenu.create("playlists")
+        for (playlist in PlaylistService.getEntirePlaylist()) {
+            selectMenu.addOption(playlist.name, playlist.name)
         }
+        command.reply("再生するリストを選択してください").addActionRow(selectMenu.build()).queue()
+        Main.instance.jda.eventManager.register(object : ListenerAdapter() {
+            override fun onSelectMenuInteraction(event: SelectMenuInteractionEvent) {
+                for (selectedOption in event.selectedOptions) {
+                    val playlist = PlaylistService.getPlaylist(selectedOption.value)
+                    if (playlist == null) {
+                        command.reply("playlist: ${selectedOption.value} が見つかりませんでした").queue()
+                        return
+                    }
 
-        command.reply("プレイリストの読み込みを開始します").queue()
-        val musicManager = Main.instance.getGuildAudioPlayer(guild)
-        for (track in playlist.contents) {
-            Main.instance.playerManager.loadItem(track.url, object : AudioLoadResultHandler {
-                override fun trackLoaded(track: AudioTrack) {
-                    AudioPlayer.play(guild, audioChannel, musicManager, track)
-                }
+                    event.reply("プレイリストの読み込みを開始します").queue()
+                    val musicManager = Main.instance.getGuildAudioPlayer(guild)
+                    for (track in playlist.contents) {
+                        Main.instance.playerManager.loadItem(track.url, object : AudioLoadResultHandler {
+                            override fun trackLoaded(track: AudioTrack) {
+                                AudioPlayer.play(guild, audioChannel, musicManager, track)
+                            }
 
-                override fun playlistLoaded(playlist: AudioPlaylist) {
-                    for (audioTrack in playlist.tracks) {
-                        AudioPlayer.play(guild, audioChannel, musicManager, audioTrack)
+                            override fun playlistLoaded(playlist: AudioPlaylist) {
+                                for (audioTrack in playlist.tracks) {
+                                    AudioPlayer.play(guild, audioChannel, musicManager, audioTrack)
+                                }
+                            }
+
+                            override fun noMatches() {
+                                command.channel.sendMessage("動画が見つかりませんでした: ${track.title}").queue()
+                            }
+
+                            override fun loadFailed(exception: FriendlyException) {
+                                command.channel.sendMessage("読み込みできませんでした").queue()
+                            }
+                        })
                     }
                 }
-
-                override fun noMatches() {
-                    command.channel.sendMessage("動画が見つかりませんでした: ${track.title}").queue()
-                }
-
-                override fun loadFailed(exception: FriendlyException) {
-                    command.channel.sendMessage("読み込みできませんでした").queue()
-                }
-            })
-        }
+                event.jda.eventManager.unregister(this)
+            }
+        })
     }
 
     private fun edit(command: SlashCommandInteraction) {
