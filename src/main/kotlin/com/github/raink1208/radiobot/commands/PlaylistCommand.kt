@@ -2,6 +2,7 @@ package com.github.raink1208.radiobot.commands
 
 import com.github.raink1208.radiobot.command.CommandBase
 import com.github.raink1208.radiobot.service.PlaylistService
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
@@ -26,6 +27,8 @@ object PlaylistCommand: CommandBase {
         when(command.subcommandName) {
             "create" -> create(command)
             "delete" -> delete(command)
+            "edit" -> edit(command)
+            "list" -> list(command)
         }
     }
 
@@ -53,5 +56,19 @@ object PlaylistCommand: CommandBase {
         } else {
             command.reply("playlist: $name の削除に失敗しました").queue()
         }
+    }
+
+    private fun edit(command: SlashCommandInteraction) {
+        command.reply("この機能は準備中です").queue()
+        //https://github.com/DV8FromTheWorld/JDA/pull/2024 TextInputの実装待ち
+    }
+
+    private fun list(command: SlashCommandInteraction) {
+        val embed = EmbedBuilder()
+        embed.setTitle("プレイリスト")
+        for (playlist in PlaylistService.getEntirePlaylist()) {
+            embed.addField(playlist.name, "author: <@" + playlist.author + ">", false)
+        }
+        command.replyEmbeds(embed.build()).queue()
     }
 }

@@ -35,6 +35,15 @@ class PlaylistRepository {
         file.delete()
     }
 
+    fun getEntirePlaylist(): List<Playlist> {
+        val list = mutableListOf<Playlist>()
+        for (file in path.toFile().walkTopDown()) {
+            if (Files.isDirectory(file.toPath())) continue
+            list.add(format.decodeFromString(file.readText()))
+        }
+        return list
+    }
+
     fun existsPlaylist(playlistName: String): Boolean {
         return exists(Paths.get(path.toString(), "$playlistName.json").toFile())
     }

@@ -24,4 +24,8 @@ object PlaylistService {
             false
         }
     }
+
+    fun getEntirePlaylist(): List<Playlist> {
+        return playlistRepository.getEntirePlaylist()
+    }
 }
