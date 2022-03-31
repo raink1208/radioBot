@@ -7,10 +7,10 @@ import net.dv8tion.jda.api.entities.User
 object PlaylistService {
     private val playlistRepository = PlaylistRepository()
 
-    fun createPlaylist(playlistName: String, authorId: Long): Boolean {
+    fun createPlaylist(playlistName: String, user: User): Boolean {
         if (playlistRepository.existsPlaylist(playlistName))
             return false
-        val playlist = Playlist(playlistName, authorId, mutableListOf())
+        val playlist = Playlist(playlistName, user.idLong, mutableListOf())
         playlistRepository.save(playlist)
         return true
     }
