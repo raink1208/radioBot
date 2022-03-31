@@ -30,6 +30,11 @@ class PlaylistRepository {
         bufferedWriter.close()
     }
 
+    fun delete(playlistName: String) {
+        val file = Paths.get(path.toString(), "$playlistName.json").toFile()
+        file.delete()
+    }
+
     fun existsPlaylist(playlistName: String): Boolean {
         return exists(Paths.get(path.toString(), "$playlistName.json").toFile())
     }
