@@ -28,7 +28,7 @@ object MusicPlayCommand: CommandBase {
 
         if (audioManager.isConnected) {
             if (audioManager.connectedChannel?.id != audioChannel.id) {
-                channel.sendMessage("既にほかのチャンネルで使われています").queue()
+                command.reply("既にほかのチャンネルで使われています").queue()
                 return
             }
         }
