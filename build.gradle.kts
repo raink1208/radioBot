@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "1.6.10"
 }
 
-val main = "com.github.raink1208.radioBot.MainKt"
+val main = "com.github.raink1208.radiobot.MainKt"
 group = "com.github.raink1208"
 version = "1.0-SNAPSHOT"
 
