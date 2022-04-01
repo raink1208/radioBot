@@ -15,5 +15,6 @@ object VCLeaveCommand: CommandBase {
             return
         }
         guild.audioManager.closeAudioConnection()
+        command.reply("VCから退出しました").queue()
     }
 }
