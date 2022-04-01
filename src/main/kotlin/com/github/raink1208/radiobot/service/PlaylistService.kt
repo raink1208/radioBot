@@ -21,7 +21,7 @@ object PlaylistService {
     }
 
     fun createPlaylist(playlistName: String, user: User, guild: Guild): CreatePlaylist {
-        if (checkPlaylistName(playlistName)) {
+        if (!checkPlaylistName(playlistName)) {
             return CreatePlaylist.NAME_ERROR
         }
         if (playlistRepository.existsPlaylist(playlistName))
@@ -46,7 +46,7 @@ object PlaylistService {
     }
 
     fun loadPlaylist(playlistName: String, user: User, guild: Guild, url: String): CreatePlaylist {
-        if (checkPlaylistName(playlistName)) {
+        if (!checkPlaylistName(playlistName)) {
             return CreatePlaylist.NAME_ERROR
         }
         if (playlistRepository.existsPlaylist(playlistName)) {
@@ -91,7 +91,17 @@ object PlaylistService {
 
     fun getPlaylistFindByGuild(guild: Guild): List<Playlist> {
         val list = getEntirePlaylist()
-        return list.filter { !it.isPublic || it.guildId != guild.idLong }
+        val fixedList = mutableListOf<Playlist>()
+        for (i in list) {
+            if (i.isPublic) {
+                fixedList.add(i)
+                continue
+            }
+            if (i.guildId == guild.idLong) {
+                fixedList.add(i)
+            }
+        }
+        return fixedList
     }
 
     enum class CreatePlaylist {
