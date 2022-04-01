@@ -41,7 +41,12 @@ object PlaylistCommand: CommandBase {
             command.reply("nameが入力されていません").queue()
             return
         }
-        when (PlaylistService.createPlaylist(name, command.user)) {
+        val guild = command.guild
+        if (guild == null) {
+            command.reply("Guild外では使用できません").queue()
+            return
+        }
+        when (PlaylistService.createPlaylist(name, command.user, guild)) {
             PlaylistService.CreatePlaylist.SUCCESS -> {
                 command.reply("playlist: $name を作成しました").queue()
             }
@@ -121,7 +126,22 @@ object PlaylistCommand: CommandBase {
             command.reply("urlが入力されていません").queue()
             return
         }
+        val guild = command.guild
+        if (guild == null) {
+            command.reply("Guild外では使用できません").queue()
+            return
+        }
         command.reply("プレイリストの読み込みを開始します").queue()
-        PlaylistService.loadPlaylist(name, command.user, url)
+        when(PlaylistService.loadPlaylist(name, command.user, guild, url)) {
+            PlaylistService.CreatePlaylist.SUCCESS -> {
+                command.channel.sendMessage("playlist: $name を作成しました").queue()
+            }
+            PlaylistService.CreatePlaylist.NAME_EXISTS -> {
+                command.channel.sendMessage("playlist: $name は既に存在します").queue()
+            }
+            PlaylistService.CreatePlaylist.NAME_ERROR -> {
+                command.channel.sendMessage("使えない文字が入っています").queue()
+            }
+        }
     }
 }

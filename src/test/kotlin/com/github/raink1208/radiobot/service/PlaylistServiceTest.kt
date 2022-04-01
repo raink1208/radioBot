@@ -24,4 +24,9 @@ internal class PlaylistServiceTest {
     fun checkName4() {
         assertFalse(PlaylistService.checkPlaylistName(">"))
     }
+
+    @Test
+    fun checkName5() {
+        assertTrue(PlaylistService.checkPlaylistName("()"))
+    }
 }
