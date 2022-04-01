@@ -95,7 +95,7 @@ object PlaylistCommand: CommandBase {
         }
 
         val selectMenu = SelectMenu.create("playlists")
-        for (playlist in PlaylistService.getEntirePlaylist()) {
+        for (playlist in PlaylistService.getPlaylistFindByGuild(guild)) {
             selectMenu.addOption(playlist.name, playlist.name)
         }
         command.reply("再生するリストを選択してください").addActionRow(selectMenu.build()).queue()
@@ -107,9 +107,16 @@ object PlaylistCommand: CommandBase {
     }
 
     private fun list(command: SlashCommandInteraction) {
+        val guild = command.guild
+
+        if (guild == null) {
+            command.reply("Guild外では使用できません").queue()
+            return
+        }
+
         val embed = EmbedBuilder()
         embed.setTitle("プレイリスト")
-        for (playlist in PlaylistService.getEntirePlaylist()) {
+        for (playlist in PlaylistService.getPlaylistFindByGuild(guild)) {
             embed.addField(playlist.name, "author: <@" + playlist.author + ">", false)
         }
         command.replyEmbeds(embed.build()).queue()

@@ -89,6 +89,11 @@ object PlaylistService {
         return playlistRepository.getEntirePlaylist()
     }
 
+    fun getPlaylistFindByGuild(guild: Guild): List<Playlist> {
+        val list = getEntirePlaylist()
+        return list.filter { !it.isPublic || it.guildId != guild.idLong }
+    }
+
     enum class CreatePlaylist {
         SUCCESS,
         NAME_EXISTS,
