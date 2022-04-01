@@ -19,12 +19,15 @@ object PlaylistService {
         playerManager.registerSourceManager(YoutubeAudioSourceManager(false))
     }
 
-    fun createPlaylist(playlistName: String, user: User): Boolean {
+    fun createPlaylist(playlistName: String, user: User): CreatePlaylist {
+        if (checkPlaylistName(playlistName)) {
+            return CreatePlaylist.NAME_ERROR
+        }
         if (playlistRepository.existsPlaylist(playlistName))
-            return false
+            return CreatePlaylist.NAME_EXISTS
         val playlist = Playlist(playlistName, user.idLong, mutableListOf())
         playlistRepository.save(playlist)
-        return true
+        return CreatePlaylist.SUCCESS
     }
 
     fun getPlaylist(playlistName: String): Playlist? {
@@ -41,7 +44,13 @@ object PlaylistService {
         }
     }
 
-    fun loadPlaylist(playlistName: String, user: User, url: String) {
+    fun loadPlaylist(playlistName: String, user: User, url: String): CreatePlaylist {
+        if (checkPlaylistName(playlistName)) {
+            return CreatePlaylist.NAME_ERROR
+        }
+        if (playlistRepository.existsPlaylist(playlistName)) {
+            return CreatePlaylist.NAME_EXISTS
+        }
         val list = mutableListOf<PlaylistItem>()
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
@@ -64,9 +73,24 @@ object PlaylistService {
             override fun loadFailed(exception: FriendlyException) {
             }
         })
+        return CreatePlaylist.SUCCESS
+    }
+
+    fun checkPlaylistName(playlistName: String): Boolean {
+        val regex = Regex("[\\x00-\\x1f<>:\"/\\\\|?*]|^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9]|CLOCK\\$)(\\.|\$)|[\\\\. ]\$")
+        if (regex.matches(playlistName)) {
+            return false
+        }
+        return true
     }
 
     fun getEntirePlaylist(): List<Playlist> {
         return playlistRepository.getEntirePlaylist()
+    }
+
+    enum class CreatePlaylist {
+        SUCCESS,
+        NAME_EXISTS,
+        NAME_ERROR
     }
 }

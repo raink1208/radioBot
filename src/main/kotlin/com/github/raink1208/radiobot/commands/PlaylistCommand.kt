@@ -41,10 +41,16 @@ object PlaylistCommand: CommandBase {
             command.reply("nameが入力されていません").queue()
             return
         }
-        if (PlaylistService.createPlaylist(name, command.user)) {
-            command.reply("playlist: $name を作成しました").queue()
-        } else {
-            command.reply("playlist: $name は既に存在します").queue()
+        when (PlaylistService.createPlaylist(name, command.user)) {
+            PlaylistService.CreatePlaylist.SUCCESS -> {
+                command.reply("playlist: $name を作成しました").queue()
+            }
+            PlaylistService.CreatePlaylist.NAME_EXISTS -> {
+                command.reply("playlist: $name は既に存在します").queue()
+            }
+            PlaylistService.CreatePlaylist.NAME_ERROR -> {
+                command.reply("使えない文字が入っています").queue()
+            }
         }
     }
 
