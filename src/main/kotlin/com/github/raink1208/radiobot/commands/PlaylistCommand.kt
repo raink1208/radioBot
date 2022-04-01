@@ -93,9 +93,14 @@ object PlaylistCommand: CommandBase {
                 return
             }
         }
+        val list = PlaylistService.getPlaylistFindByGuild(guild)
+        if (list.isEmpty()) {
+            command.reply("再生可能なプレイリストが存在しません").queue()
+            return
+        }
 
         val selectMenu = SelectMenu.create("playlists")
-        for (playlist in PlaylistService.getPlaylistFindByGuild(guild)) {
+        for (playlist in list) {
             selectMenu.addOption(playlist.name, playlist.name)
         }
         command.reply("再生するリストを選択してください").addActionRow(selectMenu.build()).queue()
