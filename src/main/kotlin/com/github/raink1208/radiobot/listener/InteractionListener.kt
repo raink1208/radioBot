@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 
 object InteractionListener: ListenerAdapter() {
     override fun onSelectMenuInteraction(event: SelectMenuInteractionEvent) {
-        if (event.selectMenu.id == "playlists") {
+        if (event.selectMenu.id == "play_playlist") {
             val guild = event.guild
             val audioChannel = event.member?.voiceState?.channel
 

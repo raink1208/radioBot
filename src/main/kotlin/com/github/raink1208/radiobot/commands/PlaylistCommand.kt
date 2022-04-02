@@ -98,7 +98,7 @@ object PlaylistCommand: CommandBase {
             return
         }
 
-        val selectMenu = SelectMenu.create("playlists")
+        val selectMenu = SelectMenu.create("play_playlist")
         for (playlist in list) {
             selectMenu.addOption(playlist.name, playlist.name)
         }
@@ -116,7 +116,7 @@ object PlaylistCommand: CommandBase {
             command.reply("選択可能なプレイリストが存在しません").queue()
             return
         }
-        val selectMenu = SelectMenu.create("edit_playlist_select_menu")
+        val selectMenu = SelectMenu.create("edit_playlist")
         for (playlist in list) {
             selectMenu.addOption(playlist.name, playlist.name)
         }
