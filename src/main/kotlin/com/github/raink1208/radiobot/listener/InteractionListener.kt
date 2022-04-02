@@ -46,12 +46,12 @@ object InteractionListener: ListenerAdapter() {
                     val musicManager = Main.instance.getGuildAudioPlayer(guild)
                     Main.instance.playerManager.loadItemOrdered(musicManager, track.url, object : AudioLoadResultHandler {
                         override fun trackLoaded(track: AudioTrack) {
-                            AudioPlayer.play(guild, audioChannel, musicManager, track)
+                            AudioPlayer().play(guild, audioChannel, musicManager, track)
                         }
 
                         override fun playlistLoaded(playlist: AudioPlaylist) {
                             for (audioTrack in playlist.tracks) {
-                                AudioPlayer.play(guild, audioChannel, musicManager, audioTrack)
+                                AudioPlayer().play(guild, audioChannel, musicManager, audioTrack)
                             }
                         }
 
