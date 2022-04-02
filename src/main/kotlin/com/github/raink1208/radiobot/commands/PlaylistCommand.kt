@@ -13,7 +13,6 @@ object PlaylistCommand: CommandBase {
     private val createSubCommand = SubcommandData("create", "プレイリストの作成")
         .addOption(OptionType.STRING,"name", "プレイリスト名", true)
     private val deleteSubCommand = SubcommandData("delete", "プレイリストの削除")
-        .addOption(OptionType.STRING, "name", "プレイリスト名", true)
     private val playSubcommand = SubcommandData("play", "プレイリストの再生")
     private val listSubCommand = SubcommandData("list", "登録されているプレイリスト一覧")
     private val editSubCommand = SubcommandData("edit", "プレイリストの編集")
@@ -58,19 +57,6 @@ object PlaylistCommand: CommandBase {
         }
     }
 
-    private fun delete(command: SlashCommandInteraction) {
-        val name = command.getOption("name")?.asString
-        if (name == null) {
-            command.reply("nameが入力されていません").queue()
-            return
-        }
-        if (PlaylistService.deletePlaylist(name, command.user)) {
-            command.reply("playlist: $name を削除しました").queue()
-        } else {
-            command.reply("playlist: $name の削除に失敗しました").queue()
-        }
-    }
-
     private fun play(command: SlashCommandInteraction) {
         val guild = command.guild
         val audioChannel = command.member?.voiceState?.channel
@@ -103,6 +89,21 @@ object PlaylistCommand: CommandBase {
             selectMenu.addOption(playlist.name, playlist.name)
         }
         command.reply("再生するリストを選択してください").addActionRow(selectMenu.build()).queue()
+    }
+
+    private fun delete(command: SlashCommandInteraction) {
+        val list = PlaylistService.getPlaylistFindByUser(command.user)
+        if (list.isEmpty()) {
+            command.reply("選択可能なプレイリストが存在しません").queue()
+            return
+        }
+
+        val selectMenu = SelectMenu.create("delete_playlist")
+        for (playlist in list) {
+            selectMenu.addOption(playlist.name, playlist.name)
+        }
+
+        command.reply("削除するプレイリストを選択してください").addActionRow(selectMenu.build()).queue()
     }
 
     private fun edit(command: SlashCommandInteraction) {
