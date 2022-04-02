@@ -66,6 +66,7 @@ object InteractionListener: ListenerAdapter() {
                     })
                 }
             }
+            event.interaction.editSelectMenu(event.selectMenu).queue()
         }
     }
 
