@@ -17,7 +17,6 @@ object PlaylistCommand: CommandBase {
     private val playSubcommand = SubcommandData("play", "プレイリストの再生")
     private val listSubCommand = SubcommandData("list", "登録されているプレイリスト一覧")
     private val editSubCommand = SubcommandData("edit", "プレイリストの編集")
-        .addOption(OptionType.STRING,"name", "プレイリスト名", true)
     private val loadSubCommand = SubcommandData("load", "外部プレイリストの読み込み")
         .addOption(OptionType.STRING, "name", "プレイリスト名", true)
         .addOption(OptionType.STRING, "url", "プレイリストのURL", true)
@@ -107,7 +106,21 @@ object PlaylistCommand: CommandBase {
     }
 
     private fun edit(command: SlashCommandInteraction) {
-        command.reply("この機能は準備中です").queue()
+        val guild = command.guild
+        if (guild == null) {
+            command.reply("Guild外では使用できません").queue()
+            return
+        }
+        val list = PlaylistService.getPlaylistFindByGuild(guild)
+        if (list.isEmpty()) {
+            command.reply("再生可能なプレイリストが存在しません").queue()
+            return
+        }
+        val selectMenu = SelectMenu.create("edit_playlist_select_menu")
+        for (playlist in list) {
+            selectMenu.addOption(playlist.name, playlist.name)
+        }
+        command.reply("この機能は準備中です").addActionRow(selectMenu.build()).queue()
         //https://github.com/DV8FromTheWorld/JDA/pull/2024 TextInputの実装待ち
     }
 
