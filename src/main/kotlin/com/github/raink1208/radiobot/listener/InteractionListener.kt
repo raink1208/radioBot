@@ -10,11 +10,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.components.LayoutComponent
 
 object InteractionListener: ListenerAdapter() {
     override fun onSelectMenuInteraction(event: SelectMenuInteractionEvent) {
         if (event.selectMenu.id == "play_playlist") {
-            event.interaction.editSelectMenu(event.selectMenu).queue()
+            val components = ArrayList(event.message.actionRows)
+            LayoutComponent.updateComponent(components, event.componentId, event.selectMenu)
+            event.hook.editMessageComponentsById(event.messageId, components).queue()
             val guild = event.guild
             val audioChannel = event.member?.voiceState?.channel
 
@@ -42,7 +45,7 @@ object InteractionListener: ListenerAdapter() {
                     event.reply("playlist: ${selectedOption.value} が見つかりませんでした").queue()
                     return
                 }
-                event.reply("プレイリストの読み込みを開始します").queue()
+                event.reply("playlist: ${playlist.name}の読み込みを開始します").queue()
                 val player = AudioPlayer()
                 for (track in playlist.contents) {
                     val musicManager = Main.instance.getGuildAudioPlayer(guild)
