@@ -1,13 +1,14 @@
 package com.github.raink1208.radiobot.interaction
 
 import com.github.raink1208.radiobot.interaction.button.ButtonInteractionBase
+import com.github.raink1208.radiobot.interaction.selection.PlayPlaylist
 import com.github.raink1208.radiobot.interaction.selection.SelectMenuInteractionBase
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
 import net.dv8tion.jda.api.interactions.components.ComponentInteraction
 
 object InteractionHandler {
-    private val selectMenuInteractions = mutableMapOf<String, SelectMenuInteractionBase>()
+    private val selectMenuInteractions = mutableMapOf<String, SelectMenuInteractionBase>("play_playlist" to PlayPlaylist)
     private val buttonInteractions = mutableMapOf<String, ButtonInteractionBase>()
 
     fun interact(event: ComponentInteraction) {
