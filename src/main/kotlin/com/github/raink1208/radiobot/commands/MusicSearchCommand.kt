@@ -32,7 +32,7 @@ object MusicSearchCommand: CommandBase {
             command.reply("検索ワードを入力してください").queue()
             return
         }
-        val result = YoutubeAPIHandler.search(words)
+        val result = YoutubeAPIHandler().search(words)
         val authorId = command.user.idLong
         val channelId = command.channel.idLong
 
@@ -46,14 +46,14 @@ object MusicSearchCommand: CommandBase {
             )
         }
 
-        command.replyEmbeds(embed.build())
+        command.replyEmbeds(embed.build()).queue()
 
         Main.instance.jda.eventManager.register(object : ListenerAdapter() {
             override fun onMessageReceived(event: MessageReceivedEvent) {
                 if (event.message.author.idLong == authorId && event.channel.idLong == channelId) {
                     val select = event.message.contentRaw.toIntOrNull() ?: -1
                     if (0 < select && select <= result.size) {
-                        AudioPlayer.loadAndPlay(command.channel, guild, audioChannel, "https://www.youtube.com/watch?v="+result[select-1].videoId)
+                        AudioPlayer().loadAndPlay(command.channel, guild, audioChannel, "https://www.youtube.com/watch?v="+result[select-1].videoId)
                     }
                     event.jda.eventManager.unregister(this)
                 }

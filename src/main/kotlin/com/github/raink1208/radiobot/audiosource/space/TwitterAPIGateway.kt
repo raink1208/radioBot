@@ -16,7 +16,7 @@ import org.apache.http.impl.client.HttpClients
 import org.apache.http.message.BasicNameValuePair
 import org.apache.http.util.EntityUtils
 
-object TwitterAPIGateway {
+class TwitterAPIGateway {
     private val httpClient = HttpClients.custom()
         .setDefaultRequestConfig(RequestConfig.custom()
             .setCookieSpec("standard").build())

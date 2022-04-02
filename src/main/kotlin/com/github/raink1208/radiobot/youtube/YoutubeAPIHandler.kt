@@ -5,7 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.youtube.YouTube
 
-object YoutubeAPIHandler {
+class YoutubeAPIHandler {
     private val httpTransport = NetHttpTransport()
     private val jsonFactory: GsonFactory = GsonFactory.getDefaultInstance()
     private val youtube: YouTube = YouTube.Builder(httpTransport, jsonFactory) {
