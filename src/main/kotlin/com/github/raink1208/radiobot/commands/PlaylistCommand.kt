@@ -111,9 +111,9 @@ object PlaylistCommand: CommandBase {
             command.reply("Guild外では使用できません").queue()
             return
         }
-        val list = PlaylistService.getPlaylistFindByGuild(guild)
+        val list = PlaylistService.getPlaylistFindByUser(command.user)
         if (list.isEmpty()) {
-            command.reply("再生可能なプレイリストが存在しません").queue()
+            command.reply("選択可能なプレイリストが存在しません").queue()
             return
         }
         val selectMenu = SelectMenu.create("edit_playlist_select_menu")

@@ -104,6 +104,16 @@ object PlaylistService {
         return fixedList
     }
 
+    fun getPlaylistFindByUser(user: User): List<Playlist> {
+        val list = getEntirePlaylist()
+        val fixedList = mutableListOf<Playlist>()
+        for (i in list) {
+            if (i.author == user.idLong)
+                fixedList.add(i)
+        }
+        return fixedList
+    }
+
     enum class CreatePlaylist {
         SUCCESS,
         NAME_EXISTS,
