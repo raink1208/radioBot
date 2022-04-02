@@ -42,16 +42,17 @@ object InteractionListener: ListenerAdapter() {
                     return
                 }
                 event.reply("プレイリストの読み込みを開始します").queue()
+                val player = AudioPlayer()
                 for (track in playlist.contents) {
                     val musicManager = Main.instance.getGuildAudioPlayer(guild)
                     Main.instance.playerManager.loadItemOrdered(musicManager, track.url, object : AudioLoadResultHandler {
                         override fun trackLoaded(track: AudioTrack) {
-                            AudioPlayer().play(guild, audioChannel, musicManager, track)
+                            player.play(guild, audioChannel, musicManager, track)
                         }
 
                         override fun playlistLoaded(playlist: AudioPlaylist) {
                             for (audioTrack in playlist.tracks) {
-                                AudioPlayer().play(guild, audioChannel, musicManager, audioTrack)
+                                player.play(guild, audioChannel, musicManager, audioTrack)
                             }
                         }
 
