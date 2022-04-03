@@ -64,7 +64,7 @@ object PlayPlaylist: SelectMenuInteractionBase {
                     }
 
                     override fun loadFailed(exception: FriendlyException) {
-                        event.channel.sendMessage("読み込みできませんでした").queue()
+                        event.channel.sendMessage(track.title+"を読み込みできませんでした").queue()
                     }
                 })
             }
