@@ -23,6 +23,7 @@ class RadioPlayCommand: CommandBase {
             command.reply("VCに参加してから使用してください").queue()
             return
         }
+        command.reply("ラジオの再生を開始します").queue()
         AudioPlayer().play(guild, audioChannel, musicManager, audioTrack)
     }
 }
