@@ -6,7 +6,7 @@ import com.github.raink1208.radiobot.util.infoEmbed
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object MusicNowPlayingCommand: CommandBase {
+class MusicNowPlayingCommand: CommandBase {
     override val commandData = Commands.slash("nowplaying", "再生中の音楽の情報を取得")
     override fun execute(command: SlashCommandInteraction) {
         val guild = command.guild

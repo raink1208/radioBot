@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu
 
-object PlaylistCommand: CommandBase {
+class PlaylistCommand: CommandBase {
     private val createSubCommand = SubcommandData("create", "プレイリストの作成")
         .addOption(OptionType.STRING,"name", "プレイリスト名", true)
     private val deleteSubCommand = SubcommandData("delete", "プレイリストの削除")

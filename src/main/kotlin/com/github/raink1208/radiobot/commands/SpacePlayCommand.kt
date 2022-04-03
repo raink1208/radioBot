@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object SpacePlayCommand: CommandBase {
+class SpacePlayCommand: CommandBase {
     override val commandData = Commands.slash("space", "twitter spaceの再生")
         .addOption(OptionType.STRING, "twitter_id", "twitterID", true)
 

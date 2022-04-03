@@ -5,7 +5,7 @@ import com.github.raink1208.radiobot.command.CommandBase
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object MusicLoopCommand: CommandBase {
+class MusicLoopCommand: CommandBase {
     override val commandData = Commands.slash("loop", "再生してる音楽をループする")
     override fun execute(command: SlashCommandInteraction) {
         val guild = command.guild

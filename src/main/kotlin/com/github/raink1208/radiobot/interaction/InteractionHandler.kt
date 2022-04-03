@@ -6,7 +6,7 @@ import com.github.raink1208.radiobot.interaction.selection.SelectMenuInteraction
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
 
-object InteractionHandler {
+class InteractionHandler {
     private val selectMenuInteractions = mutableMapOf<String, SelectMenuInteractionBase>("play_playlist" to PlayPlaylist)
     private val buttonInteractions = mutableMapOf<String, ButtonInteractionBase>()
 

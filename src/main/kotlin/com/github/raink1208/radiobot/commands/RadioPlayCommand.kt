@@ -7,7 +7,7 @@ import com.github.raink1208.radiobot.command.CommandBase
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object RadioPlayCommand: CommandBase {
+class RadioPlayCommand: CommandBase {
     override val commandData = Commands.slash("radio", "超!A&Gラジオを再生する")
 
     override fun execute(command: SlashCommandInteraction) {

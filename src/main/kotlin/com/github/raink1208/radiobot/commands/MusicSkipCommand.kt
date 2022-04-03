@@ -5,7 +5,7 @@ import com.github.raink1208.radiobot.command.CommandBase
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object MusicSkipCommand: CommandBase {
+class MusicSkipCommand: CommandBase {
     override val commandData = Commands.slash("skip", "音楽をスキップする")
 
     override fun execute(command: SlashCommandInteraction) {

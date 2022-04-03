@@ -4,7 +4,7 @@ import com.github.raink1208.radiobot.command.CommandBase
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object VCLeaveCommand: CommandBase {
+class VCLeaveCommand: CommandBase {
     override val commandData = Commands.slash("leave", "VCからBotを退出させる")
 
     override fun execute(command: SlashCommandInteraction) {
