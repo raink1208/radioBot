@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object MusicSearchCommand: CommandBase {
+class MusicSearchCommand: CommandBase {
     override val commandData = Commands.slash("search", "youtubeから動画を検索")
         .addOption(OptionType.STRING,"words", "検索するワード", true)
 

@@ -5,7 +5,7 @@ import com.github.raink1208.radiobot.command.CommandBase
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object MusicQueueCommand: CommandBase {
+class MusicQueueCommand: CommandBase {
     override val commandData = Commands.slash("queue", "再生リストを表示する")
 
     override fun execute(command: SlashCommandInteraction) {

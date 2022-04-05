@@ -10,7 +10,9 @@ internal class PlaylistRepositoryTest {
     fun savePlaylistTest() {
         val repository = PlaylistRepository()
         val contents = mutableListOf(PlaylistItem("test", "test"))
-        val playlist = Playlist("test", 43274832, contents)
+        val playlist = Playlist("test", 43274832, true, 9217489235467324,contents)
+        repository.save(playlist)
+        playlist.isPublic = false
         repository.save(playlist)
 
         println(repository.find("test"))

@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
 
 object PlaylistService {
@@ -19,12 +20,15 @@ object PlaylistService {
         playerManager.registerSourceManager(YoutubeAudioSourceManager(false))
     }
 
-    fun createPlaylist(playlistName: String, user: User): Boolean {
+    fun createPlaylist(playlistName: String, user: User, guild: Guild): CreatePlaylist {
+        if (!checkPlaylistName(playlistName)) {
+            return CreatePlaylist.NAME_ERROR
+        }
         if (playlistRepository.existsPlaylist(playlistName))
-            return false
-        val playlist = Playlist(playlistName, user.idLong, mutableListOf())
+            return CreatePlaylist.NAME_EXISTS
+        val playlist = Playlist(playlistName, user.idLong, true, guild.idLong, mutableListOf())
         playlistRepository.save(playlist)
-        return true
+        return CreatePlaylist.SUCCESS
     }
 
     fun getPlaylist(playlistName: String): Playlist? {
@@ -41,12 +45,18 @@ object PlaylistService {
         }
     }
 
-    fun loadPlaylist(playlistName: String, user: User, url: String) {
+    fun loadPlaylist(playlistName: String, user: User, guild: Guild, url: String): CreatePlaylist {
+        if (!checkPlaylistName(playlistName)) {
+            return CreatePlaylist.NAME_ERROR
+        }
+        if (playlistRepository.existsPlaylist(playlistName)) {
+            return CreatePlaylist.NAME_EXISTS
+        }
         val list = mutableListOf<PlaylistItem>()
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 list.add(PlaylistItem(track.info.title, track.info.uri))
-                val pl = Playlist(playlistName, user.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, true, guild.idLong, list)
                 playlistRepository.save(pl)
             }
 
@@ -54,7 +64,7 @@ object PlaylistService {
                 for (audioTrack in playlist.tracks) {
                     list.add(PlaylistItem(audioTrack.info.title, audioTrack.info.uri))
                 }
-                val pl = Playlist(playlistName, user.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, true, guild.idLong, list)
                 playlistRepository.save(pl)
             }
 
@@ -64,9 +74,49 @@ object PlaylistService {
             override fun loadFailed(exception: FriendlyException) {
             }
         })
+        return CreatePlaylist.SUCCESS
+    }
+
+    fun checkPlaylistName(playlistName: String): Boolean {
+        val regex = Regex("[\\x00-\\x1f<>:\"/\\\\|?*]|^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9]|CLOCK\\$)(\\.|\$)|[\\\\. ]\$")
+        if (regex.matches(playlistName)) {
+            return false
+        }
+        return true
     }
 
     fun getEntirePlaylist(): List<Playlist> {
         return playlistRepository.getEntirePlaylist()
+    }
+
+    fun getPlaylistFindByGuild(guild: Guild): List<Playlist> {
+        val list = getEntirePlaylist()
+        val fixedList = mutableListOf<Playlist>()
+        for (i in list) {
+            if (i.isPublic) {
+                fixedList.add(i)
+                continue
+            }
+            if (i.guildId == guild.idLong) {
+                fixedList.add(i)
+            }
+        }
+        return fixedList
+    }
+
+    fun getPlaylistFindByUser(user: User): List<Playlist> {
+        val list = getEntirePlaylist()
+        val fixedList = mutableListOf<Playlist>()
+        for (i in list) {
+            if (i.author == user.idLong)
+                fixedList.add(i)
+        }
+        return fixedList
+    }
+
+    enum class CreatePlaylist {
+        SUCCESS,
+        NAME_EXISTS,
+        NAME_ERROR
     }
 }

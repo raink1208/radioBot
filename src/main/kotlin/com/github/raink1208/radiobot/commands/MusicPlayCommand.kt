@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
-object MusicPlayCommand: CommandBase {
+class MusicPlayCommand: CommandBase {
     override val commandData = Commands.slash("play", "音楽を再生する")
         .addOption(OptionType.STRING, "url", "再生する音楽のURL", true)
 

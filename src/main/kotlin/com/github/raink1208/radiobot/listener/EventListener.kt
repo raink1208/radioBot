@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-object EventListener: ListenerAdapter() {
+class EventListener: ListenerAdapter() {
     private val logger: Logger = LoggerFactory.getLogger(EventListener::class.java)
     override fun onGuildVoiceLeave(event: GuildVoiceLeaveEvent) {
         if (event.entity.user.idLong == Main.instance.jda.selfUser.idLong) {

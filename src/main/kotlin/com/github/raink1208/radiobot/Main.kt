@@ -39,9 +39,9 @@ class Main: ListenerAdapter() {
     lateinit var jda: JDA
 
     private val commands = setOf(
-        MusicPlayCommand, VCLeaveCommand, MusicLoopCommand, MusicNowPlayingCommand, MusicQueueCommand,
-        MusicSkipCommand, RadioPlayCommand, QueueLoopCommand, SpacePlayCommand, MusicSearchCommand,
-        PlaylistCommand
+        MusicPlayCommand(), VCLeaveCommand(), MusicLoopCommand(), MusicNowPlayingCommand(), MusicQueueCommand(),
+        MusicSkipCommand(), RadioPlayCommand(), QueueLoopCommand(), SpacePlayCommand(), MusicSearchCommand(),
+        PlaylistCommand()
     )
 
     val playerManager = DefaultAudioPlayerManager()
@@ -58,9 +58,9 @@ class Main: ListenerAdapter() {
         try {
             jda = JDABuilder.createDefault(token)
                 .addEventListeners(this)
-                .addEventListeners(EventListener)
-                .addEventListeners(CommandListener)
-                .addEventListeners(InteractionListener)
+                .addEventListeners(EventListener())
+                .addEventListeners(CommandListener())
+                .addEventListeners(InteractionListener())
                 .setActivity(EntityBuilder.createActivity("音量注意", null, Activity.ActivityType.CUSTOM_STATUS))
                 .build()
 
