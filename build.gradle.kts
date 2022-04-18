@@ -19,7 +19,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     implementation("net.dv8tion:JDA:5.0.0-alpha.9")
-    implementation("com.github.walkyst:lavaplayer-fork:1.3.97")
+    implementation("com.github.walkyst:lavaplayer:1.3.77")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("org.yaml:snakeyaml:1.30")
     implementation("com.google.api-client:google-api-client:1.32.2")
