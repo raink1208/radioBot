@@ -18,7 +18,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
-    implementation("net.dv8tion:JDA:5.0.0-alpha.9")
+    implementation("net.dv8tion:JDA:5.0.0-alpha.11")
     implementation("com.github.walkyst:lavaplayer:1.3.77")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("org.yaml:snakeyaml:1.30")
