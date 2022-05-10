@@ -2,18 +2,25 @@ package com.github.raink1208.radiobot.interaction.selection
 
 import com.github.raink1208.radiobot.Main
 import com.github.raink1208.radiobot.audio.AudioPlayer
+import com.github.raink1208.radiobot.interaction.InteractionAction
+import com.github.raink1208.radiobot.interaction.InteractionHandler
 import com.github.raink1208.radiobot.service.PlaylistService
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
+import net.dv8tion.jda.api.interactions.components.ComponentInteraction
 import net.dv8tion.jda.api.interactions.components.LayoutComponent
 
-object PlayPlaylist: SelectMenuInteractionBase {
-    override val selectMenuId = "play_playlist"
+class PlayPlaylist: InteractionAction {
+    override fun interact(event: ComponentInteraction) {
+        if (event is SelectMenuInteractionEvent) {
+            interact(event)
+        }
+    }
 
-    override fun interact(event: SelectMenuInteractionEvent) {
+    private fun interact(event: SelectMenuInteractionEvent) {
         val components = ArrayList(event.message.actionRows)
         LayoutComponent.updateComponent(components, event.componentId, event.selectMenu)
         event.hook.editMessageComponentsById(event.messageId, components).queue()

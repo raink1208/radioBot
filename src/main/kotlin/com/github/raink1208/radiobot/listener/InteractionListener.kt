@@ -6,12 +6,11 @@ import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
 class InteractionListener: ListenerAdapter() {
-    private val interactionHandler = InteractionHandler()
     override fun onSelectMenuInteraction(event: SelectMenuInteractionEvent) {
-        interactionHandler.interact(event)
+        InteractionHandler.interact(event)
     }
 
     override fun onButtonInteraction(event: ButtonInteractionEvent) {
-        interactionHandler.interact(event)
+        InteractionHandler.interact(event)
     }
 }

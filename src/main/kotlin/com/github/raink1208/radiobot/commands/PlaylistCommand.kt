@@ -1,6 +1,9 @@
 package com.github.raink1208.radiobot.commands
 
 import com.github.raink1208.radiobot.command.CommandBase
+import com.github.raink1208.radiobot.interaction.InteractionHandler
+import com.github.raink1208.radiobot.interaction.selection.DeletePlaylist
+import com.github.raink1208.radiobot.interaction.selection.PlayPlaylist
 import com.github.raink1208.radiobot.service.PlaylistService
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.interactions.commands.OptionType
@@ -88,7 +91,11 @@ class PlaylistCommand: CommandBase {
         for (playlist in list) {
             selectMenu.addOption(playlist.name, playlist.name)
         }
-        command.reply("再生するリストを選択してください").addActionRow(selectMenu.build()).queue()
+        command.reply("再生するリストを選択してください").queue {
+            it.sendMessage("").addActionRow(selectMenu.build()).queue { msg ->
+                InteractionHandler.register(msg.idLong, PlayPlaylist())
+            }
+        }
     }
 
     private fun delete(command: SlashCommandInteraction) {
@@ -103,7 +110,11 @@ class PlaylistCommand: CommandBase {
             selectMenu.addOption(playlist.name, playlist.name)
         }
 
-        command.reply("削除するプレイリストを選択してください").addActionRow(selectMenu.build()).queue()
+        command.reply("削除するプレイリストを選択してください").queue {
+            it.sendMessage("").addActionRow(selectMenu.build()).queue { msg ->
+                InteractionHandler.register(msg.idLong, DeletePlaylist())
+            }
+        }
     }
 
     private fun edit(command: SlashCommandInteraction) {
