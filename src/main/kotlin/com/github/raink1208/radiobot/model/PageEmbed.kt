@@ -9,16 +9,16 @@ class PageEmbed private constructor(val title: String, fields: List<Field>, sepa
     var page: Int = 0
 
     fun getNext(): MessageEmbed {
-        page++
+        if (page < chunkedFields.size - 1) page++
         return getEmbed(page)
     }
 
     fun getPrev(): MessageEmbed {
-        page--
+        if (page > 0) page--
         return getEmbed(page)
     }
 
-    fun getEmbed(page: Int): MessageEmbed {
+    fun getEmbed(page: Int = 0): MessageEmbed {
         val fields = getFields(page)
         val builder = EmbedBuilder()
         builder.setTitle(title)
