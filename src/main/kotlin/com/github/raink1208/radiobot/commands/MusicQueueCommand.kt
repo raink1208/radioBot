@@ -2,6 +2,10 @@ package com.github.raink1208.radiobot.commands
 
 import com.github.raink1208.radiobot.Main
 import com.github.raink1208.radiobot.command.CommandBase
+import com.github.raink1208.radiobot.interaction.InteractionHandler
+import com.github.raink1208.radiobot.interaction.pageembed.PageEmbedController
+import com.github.raink1208.radiobot.model.PageEmbed
+import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 
@@ -20,10 +24,16 @@ class MusicQueueCommand: CommandBase {
             return
         }
         val audioTrackList = musicManager.scheduler.getMusicList()
-        var text = "再生リスト\n"
+        val pageEmbedBuilder = PageEmbed.PageEmbedBuilder()
+        pageEmbedBuilder.title = "再生リスト"
         for (audioTrack in audioTrackList) {
-            text += audioTrack.info.title + " : " + audioTrack.info.length + "\n"
+            pageEmbedBuilder.addField(MessageEmbed.Field(audioTrack.info.title, audioTrack.info.author, true))
         }
-        command.reply(text).queue()
+        val pageEmbed = pageEmbedBuilder.build()
+        command.deferReply().queue {
+            it.sendMessageEmbeds(pageEmbed.getEmbed()).addActionRow(PageEmbedController.createActionRows()).queue { msg ->
+                InteractionHandler.register(msg.idLong, PageEmbedController(pageEmbed, msg.idLong))
+            }
+        }
     }
 }
