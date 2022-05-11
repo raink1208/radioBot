@@ -21,7 +21,7 @@ class PageEmbed private constructor(val title: String, fields: List<Field>, sepa
     fun getEmbed(page: Int = 0): MessageEmbed {
         val fields = getFields(page)
         val builder = EmbedBuilder()
-        builder.setTitle(title)
+        builder.setTitle("$title (${page + 1}/${chunkedFields.size})")
         for (field in fields) {
             builder.addField(field)
         }
