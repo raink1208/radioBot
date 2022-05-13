@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.interactions.components.ComponentInteraction
 import net.dv8tion.jda.api.interactions.components.ItemComponent
 import net.dv8tion.jda.api.interactions.components.buttons.Button
 
-class PageEmbedController(private val pageEmbed: PageEmbed, val embedMessageId: Long): InteractionAction {
+class PageEmbedController(private val pageEmbed: PageEmbed, private val embedMessageId: Long): InteractionAction {
     companion object {
         fun createActionRows(): List<ItemComponent> {
             return listOf(
