@@ -3,7 +3,6 @@ package com.github.raink1208.radiobot.interaction.selection
 import com.github.raink1208.radiobot.Main
 import com.github.raink1208.radiobot.audio.AudioPlayer
 import com.github.raink1208.radiobot.interaction.InteractionAction
-import com.github.raink1208.radiobot.interaction.InteractionHandler
 import com.github.raink1208.radiobot.service.PlaylistService
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
