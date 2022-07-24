@@ -13,50 +13,21 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu
 
 class PlaylistCommand: CommandBase {
-    private val createSubCommand = SubcommandData("create", "プレイリストの作成")
-        .addOption(OptionType.STRING,"name", "プレイリスト名", true)
     private val deleteSubCommand = SubcommandData("delete", "プレイリストの削除")
     private val playSubcommand = SubcommandData("play", "プレイリストの再生")
     private val listSubCommand = SubcommandData("list", "登録されているプレイリスト一覧")
-    private val editSubCommand = SubcommandData("edit", "プレイリストの編集")
     private val loadSubCommand = SubcommandData("load", "外部プレイリストの読み込み")
         .addOption(OptionType.STRING, "name", "プレイリスト名", true)
         .addOption(OptionType.STRING, "url", "プレイリストのURL", true)
     override val commandData = Commands.slash("playlist", "プレイリスト機能")
-        .addSubcommands(createSubCommand, deleteSubCommand, playSubcommand, listSubCommand, editSubCommand, loadSubCommand)
+        .addSubcommands(deleteSubCommand, playSubcommand, listSubCommand, loadSubCommand)
 
     override fun execute(command: SlashCommandInteraction) {
         when(command.subcommandName) {
-            "create" -> create(command)
             "delete" -> delete(command)
-            "edit" -> edit(command)
             "list" -> list(command)
             "load" -> load(command)
             "play" -> play(command)
-        }
-    }
-
-    private fun create(command: SlashCommandInteraction) {
-        val name = command.getOption("name")?.asString
-        if (name == null) {
-            command.reply("nameが入力されていません").queue()
-            return
-        }
-        val guild = command.guild
-        if (guild == null) {
-            command.reply("Guild外では使用できません").queue()
-            return
-        }
-        when (PlaylistService.createPlaylist(name, command.user, guild)) {
-            PlaylistService.CreatePlaylist.SUCCESS -> {
-                command.reply("playlist: $name を作成しました").queue()
-            }
-            PlaylistService.CreatePlaylist.NAME_EXISTS -> {
-                command.reply("playlist: $name は既に存在します").queue()
-            }
-            PlaylistService.CreatePlaylist.NAME_ERROR -> {
-                command.reply("使えない文字が入っています").queue()
-            }
         }
     }
 
@@ -115,25 +86,6 @@ class PlaylistCommand: CommandBase {
                 InteractionHandler.register(msg.idLong, DeletePlaylist())
             }
         }
-    }
-
-    private fun edit(command: SlashCommandInteraction) {
-        val guild = command.guild
-        if (guild == null) {
-            command.reply("Guild外では使用できません").queue()
-            return
-        }
-        val list = PlaylistService.getPlaylistFindByUser(command.user)
-        if (list.isEmpty()) {
-            command.reply("選択可能なプレイリストが存在しません").queue()
-            return
-        }
-        val selectMenu = SelectMenu.create("edit_playlist")
-        for (playlist in list) {
-            selectMenu.addOption(playlist.name, playlist.name)
-        }
-        command.reply("この機能は準備中です").addActionRow(selectMenu.build()).queue()
-        //https://github.com/DV8FromTheWorld/JDA/pull/2024 TextInputの実装待ち
     }
 
     private fun list(command: SlashCommandInteraction) {

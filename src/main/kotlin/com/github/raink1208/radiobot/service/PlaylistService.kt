@@ -20,17 +20,6 @@ object PlaylistService {
         playerManager.registerSourceManager(YoutubeAudioSourceManager(false))
     }
 
-    fun createPlaylist(playlistName: String, user: User, guild: Guild): CreatePlaylist {
-        if (!checkPlaylistName(playlistName)) {
-            return CreatePlaylist.NAME_ERROR
-        }
-        if (playlistRepository.existsPlaylist(playlistName))
-            return CreatePlaylist.NAME_EXISTS
-        val playlist = Playlist(playlistName, user.idLong, true, guild.idLong, mutableListOf())
-        playlistRepository.save(playlist)
-        return CreatePlaylist.SUCCESS
-    }
-
     fun getPlaylist(playlistName: String): Playlist? {
         return playlistRepository.find(playlistName)
     }
