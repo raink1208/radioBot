@@ -14,13 +14,13 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectMenu
 
 class PlaylistCommand: CommandBase {
     private val deleteSubCommand = SubcommandData("delete", "プレイリストの削除")
-    private val playSubcommand = SubcommandData("play", "プレイリストの再生")
+    private val playSubCommand = SubcommandData("play", "プレイリストの再生")
     private val listSubCommand = SubcommandData("list", "登録されているプレイリスト一覧")
     private val loadSubCommand = SubcommandData("load", "外部プレイリストの読み込み")
         .addOption(OptionType.STRING, "name", "プレイリスト名", true)
         .addOption(OptionType.STRING, "url", "プレイリストのURL", true)
     override val commandData = Commands.slash("playlist", "プレイリスト機能")
-        .addSubcommands(deleteSubCommand, playSubcommand, listSubCommand, loadSubCommand)
+        .addSubcommands(deleteSubCommand, playSubCommand, listSubCommand, loadSubCommand)
 
     override fun execute(command: SlashCommandInteraction) {
         when(command.subcommandName) {
