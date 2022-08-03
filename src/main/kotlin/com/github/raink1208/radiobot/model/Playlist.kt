@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Playlist(
     val name: String,
     val author: Long,
-    var isPublic: Boolean = true,
+    var isPublic: Boolean = false,
     val guildId: Long,
     val contents: MutableList<PlaylistItem>
 )

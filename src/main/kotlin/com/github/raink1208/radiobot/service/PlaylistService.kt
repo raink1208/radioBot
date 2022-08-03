@@ -20,17 +20,6 @@ object PlaylistService {
         playerManager.registerSourceManager(YoutubeAudioSourceManager(false))
     }
 
-    fun createPlaylist(playlistName: String, user: User, guild: Guild): CreatePlaylist {
-        if (!checkPlaylistName(playlistName)) {
-            return CreatePlaylist.NAME_ERROR
-        }
-        if (playlistRepository.existsPlaylist(playlistName))
-            return CreatePlaylist.NAME_EXISTS
-        val playlist = Playlist(playlistName, user.idLong, true, guild.idLong, mutableListOf())
-        playlistRepository.save(playlist)
-        return CreatePlaylist.SUCCESS
-    }
-
     fun getPlaylist(playlistName: String): Playlist? {
         return playlistRepository.find(playlistName)
     }
@@ -56,7 +45,7 @@ object PlaylistService {
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 list.add(PlaylistItem(track.info.title, track.info.uri))
-                val pl = Playlist(playlistName, user.idLong, true, guild.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, false, guild.idLong, list)
                 playlistRepository.save(pl)
             }
 
@@ -64,7 +53,7 @@ object PlaylistService {
                 for (audioTrack in playlist.tracks) {
                     list.add(PlaylistItem(audioTrack.info.title, audioTrack.info.uri))
                 }
-                val pl = Playlist(playlistName, user.idLong, true, guild.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, false, guild.idLong, list)
                 playlistRepository.save(pl)
             }
 
