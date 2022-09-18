@@ -53,7 +53,7 @@ class MusicSearchCommand: CommandBase {
                 if (event.message.author.idLong == authorId && event.channel.idLong == channelId) {
                     val select = event.message.contentRaw.toIntOrNull() ?: -1
                     if (0 < select && select <= result.size) {
-                        AudioPlayer().loadAndPlay(command.channel, guild, audioChannel, "https://www.youtube.com/watch?v="+result[select-1].videoId)
+                        AudioPlayer.loadAndPlay(command.channel, guild, audioChannel, "https://www.youtube.com/watch?v="+result[select-1].videoId)
                     }
                     event.jda.eventManager.unregister(this)
                 }

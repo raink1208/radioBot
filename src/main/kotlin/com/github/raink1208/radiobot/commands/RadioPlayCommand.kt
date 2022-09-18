@@ -24,6 +24,6 @@ class RadioPlayCommand: CommandBase {
             return
         }
         command.reply("ラジオの再生を開始します").queue()
-        AudioPlayer().play(guild, audioChannel, musicManager, audioTrack)
+        AudioPlayer.play(guild, audioChannel, musicManager, audioTrack)
     }
 }

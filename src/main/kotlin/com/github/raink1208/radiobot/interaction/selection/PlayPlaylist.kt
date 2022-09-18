@@ -51,7 +51,7 @@ class PlayPlaylist: InteractionAction {
                 return
             }
             event.reply("playlist: ${playlist.name}の読み込みを開始します").queue()
-            val player = AudioPlayer()
+            val player = AudioPlayer
             for (track in playlist.contents) {
                 val musicManager = Main.instance.getGuildAudioPlayer(guild)
                 Main.instance.playerManager.loadItemOrdered(musicManager, track.url, object : AudioLoadResultHandler {

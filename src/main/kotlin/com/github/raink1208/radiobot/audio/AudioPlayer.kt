@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.managers.AudioManager
 
-class AudioPlayer {
+object AudioPlayer {
     fun loadAndPlay(channel: MessageChannel, guild: Guild, audioChannel: AudioChannel, trackUrl: String) {
         val musicManager = Main.instance.getGuildAudioPlayer(guild)
         Main.instance.playerManager.loadItemOrdered(musicManager, trackUrl, object : AudioLoadResultHandler {

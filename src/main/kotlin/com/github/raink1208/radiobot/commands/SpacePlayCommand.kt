@@ -38,7 +38,7 @@ class SpacePlayCommand: CommandBase {
             return
         }
         command.reply("再生の準備をしています").queue()
-        AudioPlayer().play(guild, audioChannel, musicManager, audioTrack)
+        AudioPlayer.play(guild, audioChannel, musicManager, audioTrack)
     }
 
     private fun createAudioTrack(user: TwitterUser): AudioTrack {

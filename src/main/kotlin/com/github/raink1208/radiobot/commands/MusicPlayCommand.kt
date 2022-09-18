@@ -39,6 +39,6 @@ class MusicPlayCommand: CommandBase {
             return
         }
         command.reply("再生の準備をしています").queue()
-        AudioPlayer().loadAndPlay(channel, guild, audioChannel, url)
+        AudioPlayer.loadAndPlay(channel, guild, audioChannel, url)
     }
 }
