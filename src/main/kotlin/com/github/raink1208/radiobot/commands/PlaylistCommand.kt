@@ -62,8 +62,8 @@ class PlaylistCommand: CommandBase {
         for (playlist in list) {
             selectMenu.addOption(playlist.name, playlist.name)
         }
-        command.reply("再生するリストを選択してください").queue {
-            it.sendMessage("").addActionRow(selectMenu.build()).queue { msg ->
+        command.deferReply().queue {
+            it.sendMessage("再生するリストを選択してください").addActionRow(selectMenu.build()).queue { msg ->
                 InteractionHandler.register(msg.idLong, PlayPlaylist())
             }
         }
@@ -81,8 +81,8 @@ class PlaylistCommand: CommandBase {
             selectMenu.addOption(playlist.name, playlist.name)
         }
 
-        command.reply("削除するプレイリストを選択してください").queue {
-            it.sendMessage("").addActionRow(selectMenu.build()).queue { msg ->
+        command.deferReply().queue {
+            it.sendMessage("削除するプレイリストを選択してください").addActionRow(selectMenu.build()).queue { msg ->
                 InteractionHandler.register(msg.idLong, DeletePlaylist())
             }
         }
