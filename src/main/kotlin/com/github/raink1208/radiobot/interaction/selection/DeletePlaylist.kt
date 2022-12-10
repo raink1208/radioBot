@@ -27,8 +27,8 @@ class DeletePlaylist: InteractionAction {
                 event.reply("プレイリストの削除は作成した人しかできません").queue()
                 return
             }
-            event.reply("").queue {
-                it.sendMessage("").addActionRow(Button.danger("delete_check", playlist.name + "を削除")).queue { msg ->
+            event.deferReply().queue {
+                it.sendMessage("本当に削除しますか?").addActionRow(Button.danger("delete_check", playlist.name + "を削除")).queue { msg ->
                     InteractionHandler.register(msg.idLong, DeleteCheckButton(playlist))
                 }
             }
