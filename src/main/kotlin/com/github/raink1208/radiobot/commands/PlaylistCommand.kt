@@ -2,10 +2,12 @@ package com.github.raink1208.radiobot.commands
 
 import com.github.raink1208.radiobot.command.CommandBase
 import com.github.raink1208.radiobot.interaction.InteractionHandler
+import com.github.raink1208.radiobot.interaction.pageembed.PageEmbedController
 import com.github.raink1208.radiobot.interaction.selection.DeletePlaylist
 import com.github.raink1208.radiobot.interaction.selection.PlayPlaylist
+import com.github.raink1208.radiobot.model.PageEmbed
 import com.github.raink1208.radiobot.service.PlaylistService
-import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction
 import net.dv8tion.jda.api.interactions.commands.build.Commands
@@ -96,12 +98,17 @@ class PlaylistCommand: CommandBase {
             return
         }
 
-        val embed = EmbedBuilder()
-        embed.setTitle("プレイリスト")
+        val pageEmbedBuilder = PageEmbed.PageEmbedBuilder()
+        pageEmbedBuilder.title = "プレイリスト"
         for (playlist in PlaylistService.getPlaylistFindByGuild(guild)) {
-            embed.addField(playlist.name, "author: <@" + playlist.author + ">", false)
+            pageEmbedBuilder.addField(MessageEmbed.Field(playlist.name, "author: <@" + playlist.author + ">", true))
         }
-        command.replyEmbeds(embed.build()).queue()
+        val pageEmbed = pageEmbedBuilder.build()
+        command.deferReply().queue {
+            it.sendMessageEmbeds(pageEmbed.getEmbed()).addActionRow(PageEmbedController.createActionRows()).queue { msg ->
+                InteractionHandler.register(msg.idLong, PageEmbedController(pageEmbed, msg.idLong))
+            }
+        }
     }
 
     private fun load(command: SlashCommandInteraction) {
