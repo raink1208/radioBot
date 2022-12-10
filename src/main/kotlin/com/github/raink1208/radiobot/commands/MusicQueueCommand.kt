@@ -26,8 +26,8 @@ class MusicQueueCommand: CommandBase {
         val audioTrackList = musicManager.scheduler.getMusicList()
         val pageEmbedBuilder = PageEmbed.PageEmbedBuilder()
         pageEmbedBuilder.title = "再生リスト"
-        for (audioTrack in audioTrackList) {
-            pageEmbedBuilder.addField(MessageEmbed.Field(audioTrack.info.title, audioTrack.info.author, true))
+        for ((i, audioTrack) in audioTrackList.withIndex()) {
+            pageEmbedBuilder.addField(MessageEmbed.Field(i.toString()+"."+audioTrack.info.title, audioTrack.info.author, true))
         }
         val pageEmbed = pageEmbedBuilder.build()
         command.deferReply().queue {
