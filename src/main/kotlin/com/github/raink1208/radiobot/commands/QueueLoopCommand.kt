@@ -25,7 +25,7 @@ class QueueLoopCommand: CommandBase {
             command.reply("他のチャンネルで使われています").queue()
         }
         val manager = Main.instance.getGuildAudioPlayer(guild)
-        manager.queueLoop
+        manager.toggleQueueLoop()
         command.reply("キューループ: " + if (manager.queueLoop) "有効" else "無効" + "に切り替えました").queue()
     }
 }
