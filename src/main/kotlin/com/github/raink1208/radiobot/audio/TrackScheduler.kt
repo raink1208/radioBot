@@ -17,6 +17,10 @@ class TrackScheduler(private val player: AudioPlayer, private val musicManager: 
         }
     }
 
+    fun shuffle() {
+        queue = LinkedBlockingQueue(queue.shuffled())
+    }
+
     fun getMusicList(): List<AudioTrack> {
         return queue.toList()
     }
