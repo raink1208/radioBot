@@ -44,8 +44,8 @@ class Main: ListenerAdapter() {
         PlaylistCommand()
     )
 
+    private val musicManagers = mutableMapOf<Long, GuildMusicManager>()
     val playerManager = DefaultAudioPlayerManager()
-    val musicManagers = mutableMapOf<Long, GuildMusicManager>()
 
     init {
         AudioSourceManagers.registerRemoteSources(playerManager)

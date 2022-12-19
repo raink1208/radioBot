@@ -18,11 +18,11 @@ class MusicQueueCommand: CommandBase {
             command.reply("Guild外では使えません").queue()
             return
         }
-        val musicManager = Main.instance.musicManagers[guild.idLong]
-        if (musicManager == null) {
+        if (!Main.instance.existsGuildAudioPlayer(guild)) {
             command.reply("Botは使われていません").queue()
             return
         }
+        val musicManager = Main.instance.getGuildAudioPlayer(guild)
         val audioTrackList = musicManager.scheduler.getMusicList()
         val pageEmbedBuilder = PageEmbed.PageEmbedBuilder()
         pageEmbedBuilder.title = "再生リスト"
