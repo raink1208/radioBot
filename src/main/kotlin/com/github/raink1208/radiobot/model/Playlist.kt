@@ -7,6 +7,7 @@ data class Playlist(
     val name: String,
     val author: Long,
     var isPublic: Boolean = false,
+    var upstream: String = "",
     val guildId: Long,
     val contents: MutableList<PlaylistItem>
 )

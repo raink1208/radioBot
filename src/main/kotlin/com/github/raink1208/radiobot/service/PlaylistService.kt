@@ -34,7 +34,7 @@ object PlaylistService {
         }
     }
 
-    fun loadPlaylist(playlistName: String, user: User, guild: Guild, url: String): CreatePlaylist {
+    fun loadPlaylist(playlistName: String, user: User, guildId: Long, url: String): CreatePlaylist {
         if (!checkPlaylistName(playlistName)) {
             return CreatePlaylist.NAME_ERROR
         }
@@ -45,7 +45,7 @@ object PlaylistService {
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 list.add(PlaylistItem(track.info.title, track.info.uri))
-                val pl = Playlist(playlistName, user.idLong, false, guild.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, false, url, guildId, list)
                 playlistRepository.save(pl)
             }
 
@@ -53,7 +53,7 @@ object PlaylistService {
                 for (audioTrack in playlist.tracks) {
                     list.add(PlaylistItem(audioTrack.info.title, audioTrack.info.uri))
                 }
-                val pl = Playlist(playlistName, user.idLong, false, guild.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, false, url, guildId, list)
                 playlistRepository.save(pl)
             }
 
@@ -64,6 +64,11 @@ object PlaylistService {
             }
         })
         return CreatePlaylist.SUCCESS
+    }
+
+    fun reloadPlaylist(playlist: Playlist, user: User): CreatePlaylist {
+        deletePlaylist(playlist.name, user)
+        return loadPlaylist(playlist.name, user, playlist.guildId, playlist.upstream)
     }
 
     fun checkPlaylistName(playlistName: String): Boolean {
