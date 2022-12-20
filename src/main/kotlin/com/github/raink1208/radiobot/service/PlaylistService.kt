@@ -66,6 +66,11 @@ object PlaylistService {
         return CreatePlaylist.SUCCESS
     }
 
+    fun reloadPlaylist(playlist: Playlist, user: User): CreatePlaylist {
+        deletePlaylist(playlist.name, user)
+        return loadPlaylist(playlist.name, user, playlist.guildId, playlist.upstream)
+    }
+
     fun checkPlaylistName(playlistName: String): Boolean {
         val regex = Regex("[\\x00-\\x1f<>:\"/\\\\|?*]|^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9]|CLOCK\\$)(\\.|\$)|[\\\\. ]\$")
         if (regex.matches(playlistName)) {
