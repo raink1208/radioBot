@@ -45,7 +45,7 @@ object PlaylistService {
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 list.add(PlaylistItem(track.info.title, track.info.uri))
-                val pl = Playlist(playlistName, user.idLong, false, guild.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, false, url, guild.idLong, list)
                 playlistRepository.save(pl)
             }
 
@@ -53,7 +53,7 @@ object PlaylistService {
                 for (audioTrack in playlist.tracks) {
                     list.add(PlaylistItem(audioTrack.info.title, audioTrack.info.uri))
                 }
-                val pl = Playlist(playlistName, user.idLong, false, guild.idLong, list)
+                val pl = Playlist(playlistName, user.idLong, false, url, guild.idLong, list)
                 playlistRepository.save(pl)
             }
 
