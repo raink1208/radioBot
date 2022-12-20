@@ -128,7 +128,7 @@ class PlaylistCommand: CommandBase {
             return
         }
         command.reply("プレイリストの読み込みを開始します").queue()
-        when(PlaylistService.loadPlaylist(name, command.user, guild, url)) {
+        when(PlaylistService.loadPlaylist(name, command.user, guild.idLong, url)) {
             PlaylistService.CreatePlaylist.SUCCESS -> {
                 command.channel.sendMessage("playlist: $name を作成しました").queue()
             }
