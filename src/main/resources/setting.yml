@@ -4,3 +4,6 @@ twitterToken:
 userToken:
 csrfToken:
 twitterCookie:
+dbUrl:
+dbUser:
+dbPass:
