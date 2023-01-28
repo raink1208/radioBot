@@ -11,7 +11,23 @@ class DBPlaylistRepository: IPlaylistRepository {
     private val connection: Connection = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPass())
 
     override fun save(playlist: Playlist) {
-        TODO("Not yet implemented")
+        val stmt = connection.prepareStatement("INSERT INTO playlist (id, name, author_id, guild_id, is_public, upstream) VALUES " +
+                "(UUID_TO_BIN(?), ?, ?, ?, ?, ?)")
+        stmt.setString(1, playlist.uuid.toString())
+        stmt.setString(2, playlist.name)
+        stmt.setLong(3, playlist.author)
+        stmt.setLong(4, playlist.guildId)
+        stmt.setBoolean(5, playlist.isPublic)
+        stmt.setString(6, playlist.upstream)
+        stmt.execute()
+
+        val contentStmt = connection.prepareStatement("INSERT INTO playlist_contents(playlist_id,title, url) VALUES (UUID_TO_BIN(?), ?, ?)")
+        for (content in playlist.contents) {
+            contentStmt.setString(1, playlist.uuid.toString())
+            contentStmt.setString(2, content.title)
+            contentStmt.setString(3, content.url)
+            contentStmt.execute()
+        }
     }
 
     override fun delete(uuid: UUID) {
