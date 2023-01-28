@@ -12,8 +12,9 @@ class DBPlaylistRepository: IPlaylistRepository {
     private val connection: Connection = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPass())
 
     override fun save(playlist: Playlist) {
-        val stmt = connection.prepareStatement("INSERT INTO playlist (id, name, author_id, guild_id, is_public, upstream) VALUES " +
-                "(UUID_TO_BIN(?), ?, ?, ?, ?, ?)")
+        val stmt = connection.prepareStatement(
+            "INSERT INTO playlist (id, name, author_id, guild_id, is_public, upstream) VALUES (UUID_TO_BIN(?, true), ?, ?, ?, ?, ?)"
+        )
         stmt.setString(1, playlist.uuid.toString())
         stmt.setString(2, playlist.name)
         stmt.setLong(3, playlist.author)
@@ -22,7 +23,7 @@ class DBPlaylistRepository: IPlaylistRepository {
         stmt.setString(6, playlist.upstream)
         stmt.execute()
 
-        val contentStmt = connection.prepareStatement("INSERT INTO playlist_contents(playlist_id,title, url) VALUES (UUID_TO_BIN(?), ?, ?)")
+        val contentStmt = connection.prepareStatement("INSERT INTO playlist_contents(playlist_id,title, url) VALUES (UUID_TO_BIN(?, true), ?, ?)")
         for (content in playlist.contents) {
             contentStmt.setString(1, playlist.uuid.toString())
             contentStmt.setString(2, content.title)
@@ -32,16 +33,16 @@ class DBPlaylistRepository: IPlaylistRepository {
     }
 
     override fun delete(uuid: UUID) {
-        val contentStmt = connection.prepareStatement("DELETE FROM playlist_contents WHERE playlist_id = UUID_TO_BIN(?)")
+        val contentStmt = connection.prepareStatement("DELETE FROM playlist_contents WHERE playlist_id = UUID_TO_BIN(?, true)")
         contentStmt.setString(1, uuid.toString())
         contentStmt.execute()
-        val stmt = connection.prepareStatement("DELETE FROM playlist WHERE id = UUID_TO_BIN(?)")
+        val stmt = connection.prepareStatement("DELETE FROM playlist WHERE id = UUID_TO_BIN(?, true)")
         stmt.setString(1, uuid.toString())
         stmt.execute()
     }
 
     override fun getEntirePlaylist(): List<Playlist> {
-        val stmt = connection.prepareStatement("SELECT BIN_TO_UUID(id) as id, name, author_id, guild_id, is_public, upstream FROM playlist")
+        val stmt = connection.prepareStatement("SELECT BIN_TO_UUID(id, true) as id, name, author_id, guild_id, is_public, upstream FROM playlist")
         val result = stmt.executeQuery()
         val list = mutableListOf<Playlist>()
         while (result.next()) {
@@ -57,7 +58,7 @@ class DBPlaylistRepository: IPlaylistRepository {
     }
 
     override fun existsPlaylist(playlistName: String): Boolean {
-        val stmt = connection.prepareStatement("SELECT * FROM playlist WHERE name = ? LIMIT 1",
+        val stmt = connection.prepareStatement("SELECT name FROM playlist WHERE name = ? LIMIT 1",
             ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)
         stmt.setString(1, playlistName)
         val result = stmt.executeQuery()
@@ -66,7 +67,7 @@ class DBPlaylistRepository: IPlaylistRepository {
     }
 
     override fun find(playlistName: String): Playlist? {
-        val stmt = connection.prepareStatement("SELECT BIN_TO_UUID(id) as id, name, author_id, guild_id, is_public, upstream FROM playlist WHERE name = ?")
+        val stmt = connection.prepareStatement("SELECT BIN_TO_UUID(id, true) as id, name, author_id, guild_id, is_public, upstream FROM playlist WHERE name = ?")
         stmt.setString(1, playlistName)
         val result = stmt.executeQuery()
         while (result.next()) {
@@ -83,7 +84,7 @@ class DBPlaylistRepository: IPlaylistRepository {
     }
 
     private fun loadContents(playlistId: UUID): MutableList<PlaylistItem> {
-        val stmt = connection.prepareStatement("SELECT * FROM playlist_contents WHERE playlist_id = UUID_TO_BIN(?)")
+        val stmt = connection.prepareStatement("SELECT * FROM playlist_contents WHERE playlist_id = UUID_TO_BIN(?, true)")
         stmt.setString(1, playlistId.toString())
         val result = stmt.executeQuery()
         val list = mutableListOf<PlaylistItem>()
