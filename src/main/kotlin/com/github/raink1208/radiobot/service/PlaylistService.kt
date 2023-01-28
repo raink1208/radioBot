@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
+import java.util.UUID
 
 object PlaylistService {
     private val playlistRepository = PlaylistRepository()
@@ -45,16 +46,14 @@ object PlaylistService {
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 list.add(PlaylistItem(track.info.title, track.info.uri))
-                val pl = Playlist(playlistName, user.idLong, false, url, guildId, list)
-                playlistRepository.save(pl)
+                createPlaylist(playlistName, user.idLong, url, guildId, list)
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 for (audioTrack in playlist.tracks) {
                     list.add(PlaylistItem(audioTrack.info.title, audioTrack.info.uri))
                 }
-                val pl = Playlist(playlistName, user.idLong, false, url, guildId, list)
-                playlistRepository.save(pl)
+                createPlaylist(playlistName, user.idLong, url, guildId, list)
             }
 
             override fun noMatches() {
@@ -64,6 +63,12 @@ object PlaylistService {
             }
         })
         return CreatePlaylist.SUCCESS
+    }
+
+    private fun createPlaylist(playlistName: String, userId: Long, upStream: String, guildId: Long, contents: MutableList<PlaylistItem>) {
+        val uuid = UUID.randomUUID()
+        val playlist = Playlist(uuid, playlistName, userId, false, upStream, guildId, contents)
+        playlistRepository.save(playlist)
     }
 
     fun reloadPlaylist(playlist: Playlist, user: User): CreatePlaylist {
