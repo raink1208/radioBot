@@ -37,6 +37,12 @@ object Config {
 
     fun getTwitterCookie(): String = getString("twitterCookie")
 
+    fun getDBUrl(): String = getString("dbUrl")
+
+    fun getDBUser(): String = getString("dbUser")
+
+    fun getDBPass(): String = getString("dbPass")
+
     fun get(path: String): Any {
         return config[path] ?: throw NullPointerException("setting.yml:" + path + "は存在しません")
     }

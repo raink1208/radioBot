@@ -1,9 +1,9 @@
 package com.github.raink1208.radiobot.model
 
-import kotlinx.serialization.Serializable
+import java.util.UUID
 
-@Serializable
 data class Playlist(
+    val uuid: UUID,
     val name: String,
     val author: Long,
     var isPublic: Boolean = false,

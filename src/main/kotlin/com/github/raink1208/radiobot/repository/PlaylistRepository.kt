@@ -1,6 +1,6 @@
 package com.github.raink1208.radiobot.repository
 
-import com.github.raink1208.radiobot.model.Playlist
+import com.github.raink1208.radiobot.model.PlaylistItem
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter
 import java.nio.file.Files
 import java.nio.file.Paths
 
+@Deprecated("DB移行のため")
 class PlaylistRepository {
     private val format = Json { encodeDefaults = true }
     private val path = Paths.get("./playlists").toAbsolutePath()
@@ -58,3 +59,13 @@ class PlaylistRepository {
         return format.decodeFromString<Playlist>(file.readText())
     }
 }
+
+@kotlinx.serialization.Serializable
+data class Playlist(
+    val name: String,
+    val author: Long,
+    var isPublic: Boolean = false,
+    var upstream: String = "",
+    val guildId: Long,
+    val contents: MutableList<PlaylistItem>
+)

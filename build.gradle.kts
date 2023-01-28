@@ -26,6 +26,9 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.32.1")
     implementation("com.google.apis:google-api-services-youtube:v3-rev20210915-1.32.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+
+    runtimeOnly("mysql:mysql-connector-java:8.0.32")
+
     implementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 

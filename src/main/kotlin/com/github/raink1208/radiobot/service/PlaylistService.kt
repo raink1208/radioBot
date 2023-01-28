@@ -2,7 +2,8 @@ package com.github.raink1208.radiobot.service
 
 import com.github.raink1208.radiobot.model.Playlist
 import com.github.raink1208.radiobot.model.PlaylistItem
-import com.github.raink1208.radiobot.repository.PlaylistRepository
+import com.github.raink1208.radiobot.repository.DBPlaylistRepository
+import com.github.raink1208.radiobot.repository.IPlaylistRepository
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
@@ -11,9 +12,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
+import java.util.UUID
 
 object PlaylistService {
-    private val playlistRepository = PlaylistRepository()
+    private val playlistRepository: IPlaylistRepository = DBPlaylistRepository()
     private val playerManager = DefaultAudioPlayerManager()
 
     init {
@@ -27,7 +29,7 @@ object PlaylistService {
     fun deletePlaylist(playlistName: String, user: User): Boolean {
         val playlist = playlistRepository.find(playlistName) ?: return false
         return if (playlist.author == user.idLong) {
-            playlistRepository.delete(playlistName)
+            playlistRepository.delete(playlist.uuid)
             true
         } else {
             false
@@ -45,16 +47,14 @@ object PlaylistService {
         playerManager.loadItem(url, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 list.add(PlaylistItem(track.info.title, track.info.uri))
-                val pl = Playlist(playlistName, user.idLong, false, url, guildId, list)
-                playlistRepository.save(pl)
+                createPlaylist(playlistName, user.idLong, url, guildId, list)
             }
 
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 for (audioTrack in playlist.tracks) {
                     list.add(PlaylistItem(audioTrack.info.title, audioTrack.info.uri))
                 }
-                val pl = Playlist(playlistName, user.idLong, false, url, guildId, list)
-                playlistRepository.save(pl)
+                createPlaylist(playlistName, user.idLong, url, guildId, list)
             }
 
             override fun noMatches() {
@@ -64,6 +64,12 @@ object PlaylistService {
             }
         })
         return CreatePlaylist.SUCCESS
+    }
+
+    private fun createPlaylist(playlistName: String, userId: Long, upStream: String, guildId: Long, contents: MutableList<PlaylistItem>) {
+        val uuid = UUID.randomUUID()
+        val playlist = Playlist(uuid, playlistName, userId, false, upStream, guildId, contents)
+        playlistRepository.save(playlist)
     }
 
     fun reloadPlaylist(playlist: Playlist, user: User): CreatePlaylist {
