@@ -1,6 +1,7 @@
 package com.github.raink1208.radiobot.repository
 
 import com.github.raink1208.radiobot.model.Playlist
+import com.github.raink1208.radiobot.model.PlaylistItem
 import com.github.raink1208.radiobot.util.Config
 import java.sql.Connection
 import java.sql.DriverManager
@@ -53,6 +54,32 @@ class DBPlaylistRepository: IPlaylistRepository {
     }
 
     override fun find(playlistName: String): Playlist? {
-        TODO("Not yet implemented")
+        val stmt = connection.prepareStatement("SELECT BIN_TO_UUID(id) as id, name, author_id, guild_id, is_public, upstream FROM playlist WHERE name = ?")
+        stmt.setString(1, playlistName)
+        val result = stmt.executeQuery()
+        while (result.next()) {
+            val uuid = UUID.fromString(result.getString("id"))
+            val name = result.getString("name")
+            val authorId = result.getLong("author_id")
+            val guildId = result.getLong("guild_id")
+            val isPublic = result.getBoolean("is_public")
+            val upstream = result.getString("upstream")
+            val contents = loadContents(uuid)
+            return Playlist(uuid, name, authorId, isPublic, upstream, guildId, contents)
+        }
+        return null
+    }
+
+    private fun loadContents(playlistId: UUID): MutableList<PlaylistItem> {
+        val stmt = connection.prepareStatement("SELECT * FROM playlist_contents WHERE playlist_id = UUID_TO_BIN(?)")
+        stmt.setString(1, playlistId.toString())
+        val result = stmt.executeQuery()
+        val list = mutableListOf<PlaylistItem>()
+        while (result.next()) {
+            val title = result.getString("title")
+            val url = result.getString("url")
+            list.add(PlaylistItem(title, url))
+        }
+        return list
     }
 }
