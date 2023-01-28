@@ -5,6 +5,7 @@ import com.github.raink1208.radiobot.util.Config
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
+import java.util.UUID
 
 class DBPlaylistRepository: IPlaylistRepository {
     private val connection: Connection = DriverManager.getConnection(Config.getDBUrl(), Config.getDBUser(), Config.getDBPass())
@@ -13,8 +14,13 @@ class DBPlaylistRepository: IPlaylistRepository {
         TODO("Not yet implemented")
     }
 
-    override fun delete(playlistName: String) {
-        TODO("Not yet implemented")
+    override fun delete(uuid: UUID) {
+        val contentStmt = connection.prepareStatement("DELETE FROM playlist_contents WHERE playlist_id = UUID_TO_BIN(?)")
+        contentStmt.setString(1, uuid.toString())
+        contentStmt.execute()
+        val stmt = connection.prepareStatement("DELETE FROM playlist WHERE id = UUID_TO_BIN(?)")
+        stmt.setString(1, uuid.toString())
+        stmt.execute()
     }
 
     override fun getEntirePlaylist(): List<Playlist> {
