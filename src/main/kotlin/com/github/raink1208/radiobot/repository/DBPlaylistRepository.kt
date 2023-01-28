@@ -41,7 +41,19 @@ class DBPlaylistRepository: IPlaylistRepository {
     }
 
     override fun getEntirePlaylist(): List<Playlist> {
-        TODO("Not yet implemented")
+        val stmt = connection.prepareStatement("SELECT BIN_TO_UUID(id) as id, name, author_id, guild_id, is_public, upstream FROM playlist")
+        val result = stmt.executeQuery()
+        val list = mutableListOf<Playlist>()
+        while (result.next()) {
+            val uuid = UUID.fromString(result.getString("id"))
+            val name = result.getString("name")
+            val authorId = result.getLong("author_id")
+            val guildId = result.getLong("guild_id")
+            val isPublic = result.getBoolean("is_public")
+            val upstream = result.getString("upstream")
+            list.add(Playlist(uuid, name, authorId, isPublic, upstream, guildId, mutableListOf()))
+        }
+        return list
     }
 
     override fun existsPlaylist(playlistName: String): Boolean {
